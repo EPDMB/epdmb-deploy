@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
@@ -18,47 +23,68 @@ export class UserRepository {
     });
   }
   async createUserAuth0(user: Partial<User>) {
-    const hashedPassword = await bcrypt.hash(user.password, 12);
-    if (!hashedPassword) {
-      throw new BadRequestException('Error al encriptar la clave');
+    try {
+      const hashedPassword = await bcrypt.hash(user.password, 12);
+      if (!hashedPassword) {
+        throw new BadRequestException('Error al encriptar la clave');
+      }
+      const newUser = this.userRepository.create({
+        ...user,
+        password: hashedPassword,
+      });
+      await this.userRepository.save(newUser);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error);
+      }
     }
-    const newUser = this.userRepository.create({
-      ...user,
-      password: hashedPassword,
-    });
-    await this.userRepository.save(newUser);
   }
   async registerUser(user: Partial<RegisterUserDto>): Promise<User> {
-    if (user.password !== user.confirmPassword) {
-      throw new BadRequestException('Los Passwords no coinciden');
+    try {
+      if (user.password !== user.confirmPassword) {
+        throw new BadRequestException('Los Passwords no coinciden');
+      }
+      const userFound = await this.userRepository.findOneBy({
+        email: user.email,
+      });
+      if (userFound) {
+        throw new BadRequestException('El Usuario ya Existe');
+      }
+      const hashedPassword = await bcrypt.hash(user.password, 12);
+      if (!hashedPassword) {
+        throw new BadRequestException('Error al encriptar la clave');
+      }
+      const newUser = this.userRepository.create({
+        ...user,
+        password: hashedPassword,
+      });
+      return await this.userRepository.save(newUser);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error);
+      }
     }
-
-    const userFound = await this.userRepository.findOneBy({
-      email: user.email,
-    });
-    if (userFound) {
-      throw new BadRequestException('El Usuario ya Existe');
-    }
-
-    const hashedPassword = await bcrypt.hash(user.password, 12);
-    if (!hashedPassword) {
-      throw new BadRequestException('Error al encriptar la clave');
-    }
-
-    const newUser = this.userRepository.create({
-      ...user,
-      password: hashedPassword,
-    });
-
-    return newUser;
   }
   async saveUser(user: User): Promise<User> {
-    return await this.userRepository.save(user);
+    try {
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOneBy({
-      email: email,
-    });
+    try {
+      const user = await this.userRepository.findOneBy({
+        email: email,
+      });
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

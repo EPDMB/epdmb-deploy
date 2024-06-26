@@ -5,6 +5,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { auth } from 'express-openid-connect';
 import { config as auth0Config } from './config/auth0.config';
+import { config as dotenvConfig } from 'dotenv';
+
+dotenvConfig({ path: '.env' });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +25,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
+
 bootstrap();

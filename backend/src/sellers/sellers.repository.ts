@@ -13,9 +13,11 @@ export class SellerRepository {
     @InjectRepository(Seller)
     private readonly sellerRepository: Repository<Seller>,
     private readonly userRepository: UserRepository,
-    @InjectRepository(User) private readonly usersRepository: Repository<User>
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
-  async sellerRegister(sellerData: RegisterSellerDto): Promise<Partial<Seller>> {
+  async sellerRegister(
+    sellerData: RegisterSellerDto,
+  ): Promise<Partial<Seller>> {
     const {
       name,
       lastname,
@@ -26,7 +28,6 @@ export class SellerRepository {
       phone,
       address,
       profile_picture,
-      
     } = sellerData;
 
     const sellerX = this.sellerRepository.create();
@@ -44,11 +45,14 @@ export class SellerRepository {
       phone,
       address,
       profile_picture,
-      role : Role.SELLER
-      
+      role: Role.SELLER,
     });
-    userRegistered.seller = sellerX
-    await this.usersRepository.save(userRegistered)
-    return sellerX
+    userRegistered.seller = sellerX;
+    await this.usersRepository.save(userRegistered);
+    return sellerX;
+  }
+
+  async getByEmail(email: string) {
+    return await this.usersRepository.findOneBy({ email });
   }
 }

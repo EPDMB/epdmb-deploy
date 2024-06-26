@@ -32,14 +32,14 @@ export class AuthController {
     await this.authService.validateUser(req.oidc.user);
     const user = await this.userService.findByEmail(req.oidc.user.email);
     const jwtToken = await this.authService.createJwtToken(user);
-    res.redirect(`http://localhost:3000?token=${jwtToken}`);
+    return jwtToken;
   }
 
   @SignUpUserSwagger()
   @Post('register/user')
   async registerUser(@Body() userDto: RegisterUserDto) {
+    const user = await this.authService.registerUser(userDto);
     try {
-      const user = await this.authService.registerUser(userDto);
       return {
         message:
           'Usuario registrado exitosamente, revise su correo para verificar el registro',
