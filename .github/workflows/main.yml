@@ -30,4 +30,4 @@ jobs:
         context: .
         file: ./Dockerfile.backend
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/epdmb-backend:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/epdmb-backend:2.0
