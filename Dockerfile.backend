@@ -1,0 +1,23 @@
+# Etapa 1: Construir el Backend
+FROM node:20 AS backend-builder
+WORKDIR /app/backend
+COPY backend/package*.json ./
+RUN npm install
+COPY backend/ ./
+RUN npm run build
+
+# Etapa 2: Configurar el Contenedor Final
+FROM node:20
+WORKDIR /app/backend
+
+# Copiar el backend construido desde la etapa 1
+COPY --from=backend-builder /app/backend ./
+
+# Instalar dependencias de producción
+RUN npm install --only=production
+
+# Exponer el puerto que la aplicación utilizará
+EXPOSE 3000
+
+# Comando para ejecutar el backend
+CMD ["node", "dist/main"]
