@@ -13,6 +13,7 @@ jobs:
       name: Checkout
       uses: actions/checkout@v2
 
+    # Configurar Docker Buildx y login a Docker Hub
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -22,14 +23,11 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    # Construir y empujar la imagen del backend
     - name: Build and push backend
       uses: docker/build-push-action@v2
       with:
         context: .
         file: ./Dockerfile.backend
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/myapp-backend:latest
-
-    - name: Debug build failure
-      run: |
-        docker run --rm ${{ secrets.DOCKERHUB_USERNAME }}/epdmb-backend:latest /bin/sh -c "ls -la /app/backend && npm run build"
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/epdmb-backend:latest
