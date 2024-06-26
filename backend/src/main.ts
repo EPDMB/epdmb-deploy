@@ -18,7 +18,7 @@ async function bootstrap() {
     .setDescription(
       'Esta documentación describe el uso de la API del placard de mi bebot, el servidor está creado con NestJS, y como base de datos se utiliza PostgreSQL. \n- Los invitados van a poder registrarse como vendedores o como usarios. \n- Los usuarios van a poder anotarse en las ferias, y pagar la entrada dependiendo la feria. \n- Los vendedores van a poder anotarse para vender su ropa en las ferias, van a subir los productos y van a recibir el 70% de las ventas finalizada la feria.',
     )
-    .setVersion('1.0')
+    .setVersion('2.0')
     .addBearerAuth()
     .build();
 

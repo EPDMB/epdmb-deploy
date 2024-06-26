@@ -37,9 +37,6 @@ const config: DataSourceOptions = {
   // entities: ['dist/**/*.entity{.ts,.js}'],
   //autoLoadEntities: true,
   migrations: ['dist/src/migrations/*{.ts,.js}'],
-  ssl: {
-    rejectUnauthorized: false, // Ajusta esta opción según la configuración de tu servidor PostgreSQL
-}
 };
 
 export default registerAs('typeorm', () => config);

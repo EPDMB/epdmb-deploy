@@ -32,51 +32,25 @@ export class AuthController {
     await this.authService.validateUser(req.oidc.user);
     const user = await this.userService.findByEmail(req.oidc.user.email);
     const jwtToken = await this.authService.createJwtToken(user);
-    return jwtToken;
+    res.redirect(`http://localhost:3000?token=${jwtToken}`);
   }
 
   @SignUpUserSwagger()
   @Post('register/user')
   async registerUser(@Body() userDto: RegisterUserDto) {
-    const user = await this.authService.registerUser(userDto);
-    try {
-      return {
-        message:
-          'Usuario registrado exitosamente, revise su correo para verificar el registro',
-        user,
-      };
-    } catch (error) {
-      console.log(error);
-      if (error instanceof BadRequestException) {
-        throw error;
-      } else {
-        throw new BadRequestException('Error en el registro de usuario');
-      }
-    }
+    return await this.authService.registerUser(userDto);
   }
 
   @SignUpSellerSwagger()
   @Post('register/seller')
   async registerSeller(@Body() sellerData: RegisterSellerDto) {
-    const seller = await this.authService.registerSeller(sellerData);
-    return {
-      message:
-        'Vendedor solicitado, nos pondremos en contacto a la brevedad para autorizar su solicitud.',
-      seller,
-    };
+    return await this.authService.registerSeller(sellerData);
   }
+
   @getAuthSwagger()
   @Get('verify-email/:token')
   async verifyEmail(@Param('token') token: string) {
-    try {
-      const user = await this.authService.verifyEmail(token);
-      return {
-        message: 'Email verificado exitosamente',
-        user,
-      };
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+    return await this.authService.verifyEmail(token);
   }
 
   @SignInSwagger()
@@ -85,6 +59,8 @@ export class AuthController {
     const user = await this.authService.loginUser(loginUserDto);
     return user;
   }
+
+  
   @Get('protected')
   getAuthProtected(@Req() req: Request) {
     return JSON.stringify(req.oidc.user);

@@ -9,6 +9,9 @@ import { SellerRepository } from '../sellers/sellers.repository';
 import { UsersService } from 'src/users/users.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { config as dotenvConfig } from 'dotenv';
+import { join } from 'path';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+
 
 dotenvConfig({ path: '.env' });
 
@@ -21,12 +24,21 @@ dotenvConfig({ path: '.env' });
         auth: {
           user: process.env.EMAIL,
           pass: process.env.EMAIL_PASSWORD,
+        }
+
+      },
+      defaults: {
+        from: '"El Placard de mi Bebot" <' + process.env.EMAIL + '>',
+      },
+      template: {
+        dir: join(__dirname, '..', '../templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
         },
-        // tls: {
-        //   rejectUnauthorized: true, // <--- Esta línea es importante
-        // },
       },
     }),
+    
   ],
   controllers: [AuthController],
   providers: [AuthService, UserRepository, SellerRepository, UsersService],

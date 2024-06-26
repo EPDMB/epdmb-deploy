@@ -39,7 +39,7 @@ export class User {
     @Column({ default: new Date() })
     registration_date: Date
 
-    @Column({ default: true })
+    @Column({ default: false })
     status: boolean
 
     @Column({ default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'})

@@ -52,7 +52,7 @@ export class SellerRepository {
     return sellerX;
   }
 
-  async getByEmail(email: string) {
+  async findByEmail(email: string) {
     return await this.usersRepository.findOneBy({ email });
   }
 }

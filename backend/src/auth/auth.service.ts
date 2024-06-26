@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Role } from 'src/roles/roles.enum';
 import { MailerService } from '@nestjs-modules/mailer';
 import { config as dotenvConfig } from 'dotenv';
+
 dotenvConfig({ path: '.env' });
 
 @Injectable()
@@ -26,18 +27,23 @@ export class AuthService {
   ) {}
 
   async sendEmailVerification(email: string, token: string) {
-    const url = `http://localhost:3000/auth/verify-email?token=${token}`;
-    this.mailService.sendMail({
-      from: '"El Placard de mi Bebot" <' + process.env.EMAIL + '>',
-      to: email,
-      subject: 'Confirma tu cuenta',
-      html: `<p>Confirma tu cuenta haciendo click en el siguiente enlace: <a href="${url}">Confirmar Cuenta</a></p>`,
-    });
+    const url = `http://localhost:3000/auth/verify-email/${token}`;
+    try {
+      await this.mailService.sendMail({
+        to: email,
+        subject: 'Confirma tu cuenta',
+        template: 'mail',
+        context: { url },
+      });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'Error al enviar el correo de verificación',
+      );
+    }
   }
 
-  async registerUser(
-    user: RegisterUserDto,
-  ): Promise<{ token: string; message: string }> {
+  async registerUser(user: RegisterUserDto): Promise<{ message: string }> {
     try {
       const userFound = await this.userRepository.findByEmail(user.email);
       if (userFound) throw new NotFoundException('El usuario ya existe');
@@ -49,13 +55,9 @@ export class AuthService {
       );
       await this.sendEmailVerification(newUser.email, token);
 
-      const payload = { id: newUser.id, email: newUser.email, role: Role.USER };
-      const authToken = this.jwtService.sign(payload);
-
       return {
         message:
           'Usuario registrado, revise su correo para verificar el registro',
-        token: authToken,
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -68,32 +70,25 @@ export class AuthService {
 
   async registerSeller(
     sellerData: RegisterSellerDto,
-  ): Promise<{ token: string; message: string }> {
+  ): Promise<{ message: string }> {
     try {
-      const sellerFound = await this.sellerRepository.getByEmail(
+      const sellerFound = await this.sellerRepository.findByEmail(
         sellerData.email,
       );
       if (sellerFound) throw new NotFoundException('El usuario ya existe');
 
-      const newSeller = await this.sellerRepository.sellerRegister(sellerData);
+      await this.sellerRepository.sellerRegister(sellerData);
 
       const token = this.jwtService.sign(
-        { email: newSeller.user.email },
+        { email: sellerData.email },
         { secret: process.env.JWT_SECRET },
       );
-      await this.sendEmailVerification(newSeller.user.email, token);
 
-      const payload = {
-        id: newSeller.id,
-        email: newSeller.user.email,
-        role: Role.SELLER,
-      };
-      const authToken = this.jwtService.sign(payload);
+      await this.sendEmailVerification(sellerData.email, token);
 
       return {
         message:
           'Vendedor registrado, revise su correo para verificar el registro',
-        token: authToken,
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -123,6 +118,7 @@ export class AuthService {
       }
     }
   }
+
   async verifyEmail(token: string) {
     try {
       const decoded = this.jwtService.verify(token, {
@@ -132,10 +128,10 @@ export class AuthService {
       const user = await this.userRepository.findByEmail(email);
       if (!user) throw new UnauthorizedException('Usuario no encontrado');
 
-      user.isVerified = true;
+      user.status = true;
       await this.userRepository.saveUser(user);
 
-      return user;
+      return 'Usuario registrado exitosamente';
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw error;
@@ -144,6 +140,7 @@ export class AuthService {
       }
     }
   }
+
   async validateUser(payload: any) {
     try {
       const user = await this.userRepository.findByEmail(payload.email);
@@ -171,6 +168,7 @@ export class AuthService {
       throw new InternalServerErrorException(error);
     }
   }
+
   async createJwtToken(user: any) {
     try {
       const payload = { email: user.email, sid: user.sid, role: user.role };

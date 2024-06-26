@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -23,6 +23,7 @@ import { UserFairRegistration } from './user_fair_registration/userFairRegistrat
 import { SellerFairRegistration } from './seller_fair_registration/sellerFairRegistration.entity';
 import { FairsModule } from './fairs/fairs.module';
 import { ProductsModule } from './products/products.module';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -49,4 +50,12 @@ import { ProductsModule } from './products/products.module';
   controllers: [AppController, SellerController, AuthController],
   providers: [AppService, SellerService, AuthService, UsersService, UserRepository, SellerRepository],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  constructor() {}
+
+
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
