@@ -1,5 +1,5 @@
 # Etapa 1: Construir el Backend
-FROM node:20 AS backend-builder
+FROM node:16 AS backend-builder
 WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm install
@@ -7,7 +7,7 @@ COPY backend/ ./
 RUN npm run build
 
 # Etapa 2: Configurar el Contenedor Final
-FROM node:20
+FROM node:16
 WORKDIR /app/backend
 
 # Copiar el backend construido desde la etapa 1
