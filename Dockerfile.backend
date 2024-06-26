@@ -4,7 +4,7 @@ WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm install
 COPY backend/ ./
-RUN npm run build
+RUN npm run start
 
 # Etapa 2: Configurar el Contenedor Final
 FROM node:20
