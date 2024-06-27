@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Product } from './products.entity';
 import { SKU } from './entities/SKU.entity';
-import { Seller } from 'src/sellers/sellers.entity';
+import { Seller } from '../sellers/sellers.entity';
 import { ProductsDto } from './products.dto';
 
 @Injectable()

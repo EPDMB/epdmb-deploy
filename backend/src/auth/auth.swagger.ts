@@ -5,8 +5,8 @@ import {
   ApiBody,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
-import { RegisterSellerDto } from 'src/sellers/sellers.dto';
-import { LoginUserDto, RegisterUserDto } from 'src/users/users.dto';
+import { RegisterSellerDto } from '../sellers/sellers.dto';
+import { LoginUserDto, RegisterUserDto } from '../users/users.dto';
 
 export function SignUpUserSwagger() {
   return applyDecorators(

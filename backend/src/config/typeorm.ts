@@ -3,14 +3,14 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
-import { Fair } from 'src/fairs/fairs.entity';
-import { UserFairRegistration } from 'src/user_fair_registration/userFairRegistration.entity';
-import { SellerFairRegistration } from 'src/seller_fair_registration/sellerFairRegistration.entity';
-import { User } from 'src/users/users.entity';
-import { Product } from 'src/products/products.entity';
-import { Seller } from 'src/sellers/sellers.entity';
-import { PaymentTransaction } from 'src/payment_transaction/paymentTransaction.entity';
-import { SKU } from 'src/products/entities/SKU.entity';
+import { Fair } from '../fairs/fairs.entity';
+import { UserFairRegistration } from '../user_fair_registration/userFairRegistration.entity';
+import { SellerFairRegistration } from '../seller_fair_registration/sellerFairRegistration.entity';
+import { User } from '../users/users.entity';
+import { Product } from '../products/products.entity';
+import { Seller } from '../sellers/sellers.entity';
+import { PaymentTransaction } from '../payment_transaction/paymentTransaction.entity';
+import { SKU } from '../products/entities/SKU.entity';
 
 dotenvConfig({ path: '.env' });
 
@@ -34,12 +34,11 @@ const config: DataSourceOptions = {
     PaymentTransaction,
     SKU,
   ],
+  ssl: false, // deshabilitar SSL
+
   // entities: ['dist/**/*.entity{.ts,.js}'],
   //autoLoadEntities: true,
   migrations: ['dist/src/migrations/*{.ts,.js}'],
-  ssl: {
-    rejectUnauthorized: false, // Ajusta esta opción según la configuración de tu servidor PostgreSQL
-}
 };
 
 export default registerAs('typeorm', () => config);

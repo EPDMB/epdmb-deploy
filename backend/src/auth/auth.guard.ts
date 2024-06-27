@@ -9,25 +9,30 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtservice: JwtService) {}
+  constructor(private readonly jwtService: JwtService) {}
+
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers.autorization?.split(' ')[1];
-    const bearer = request.headers.autorization?.split(' ')[0];
+    const token = request.headers.authorization?.split(' ')[1];
+    const bearer = request.headers.authorization?.split(' ')[0];
 
-    if (!bearer) throw new NotFoundException('no es bearer');
-    if (!token) throw new NotFoundException('Token inexistente');
+    if (!bearer) {
+      throw new NotFoundException('El encabezado Authorization no es el requerido (bearer)');
+    }
+    if (!token) {
+      throw new NotFoundException('Token no encontrado en el encabezado Authorization');
+    }
 
     try {
       const secret = process.env.JWT_SECRET;
-      const payload = this.jwtservice.verify(token, { secret });
+      const payload = this.jwtService.verify(token, { secret });
       request.user = payload;
       return true;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException('Error al verificar el token JWT');
     }
   }
 }

@@ -11,7 +11,6 @@ import { SellerFairRegistration } from '../seller_fair_registration/sellerFairRe
 import { Fair } from '../fairs/fairs.entity';
 import { Product } from '../products/products.entity';
 import { AuthService } from '../auth/auth.service';
-import { AuthController } from '../auth/auth.controller';
 import { requiresAuth } from 'express-openid-connect';
 
 @Module({
@@ -27,7 +26,7 @@ import { requiresAuth } from 'express-openid-connect';
       Product,
     ]),
   ],
-  controllers: [UsersController, AuthController],
+  controllers: [UsersController],
   providers: [UsersService, UserRepository, SellerRepository, AuthService],
 })
 export class UsersModule implements NestModule {

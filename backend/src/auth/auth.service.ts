@@ -8,10 +8,10 @@ import { LoginUserDto, RegisterUserDto } from '../users/users.dto';
 import { User } from '../users/users.entity';
 import { UserRepository } from '../users/users.repository';
 import { SellerRepository } from '../sellers/sellers.repository';
-import { RegisterSellerDto } from 'src/sellers/sellers.dto';
+import { RegisterSellerDto } from '../sellers/sellers.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from 'src/roles/roles.enum';
+import { Role } from '../roles/roles.enum';
 import { MailerService } from '@nestjs-modules/mailer';
 import { config as dotenvConfig } from 'dotenv';
 
@@ -27,7 +27,7 @@ export class AuthService {
   ) {}
 
   async sendEmailVerification(email: string, token: string) {
-    const url = `http://localhost:3000/auth/verify-email/${token}`;
+    const url = `https://myapp-backend-latest.onrender.com/auth/verify-email/${token}`;
     try {
       await this.mailService.sendMail({
         to: email,

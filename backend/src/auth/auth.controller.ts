@@ -1,13 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto, RegisterUserDto } from '../users/users.dto';
 import { RegisterSellerDto } from '../sellers/sellers.dto';
@@ -18,8 +9,11 @@ import {
   getAuthSwagger,
 } from './auth.swagger';
 import { Request } from 'express';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -60,7 +54,6 @@ export class AuthController {
     return user;
   }
 
-  
   @Get('protected')
   getAuthProtected(@Req() req: Request) {
     return JSON.stringify(req.oidc.user);

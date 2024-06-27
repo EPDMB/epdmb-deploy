@@ -19,19 +19,28 @@ export class Fair{
     address: string;
 
     @Column()
-    startDate: Date;
+    dateStartFair: Date;
 
     @Column()
-    endDate: Date;
+    dateEndFair: Date;
 
     @Column()
-    entryFee: number;
+    hourStartFair: number;
+
+    @Column()
+    hourEndFair: number;
+
+    @Column()
+    entryPrice: number;
 
     @Column({ nullable: true })
-    entryFeeDescription: string;
+    entryDescription: string;
 
     @Column()
     maxSellers: number;
+    
+    @Column()
+    maxBuyers: number;
 
     @OneToMany(() => UserFairRegistration, registrations => registrations.fair)
     @JoinColumn()

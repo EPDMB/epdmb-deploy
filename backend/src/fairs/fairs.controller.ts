@@ -12,7 +12,4 @@ export class FairsController {
     async createFair(@Body()fair : FairDto){
         return await this.fairsSerivce.createFair(fair)
     }
-
-
-
 }

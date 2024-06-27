@@ -24,6 +24,10 @@ import { SellerFairRegistration } from './seller_fair_registration/sellerFairReg
 import { FairsModule } from './fairs/fairs.module';
 import { ProductsModule } from './products/products.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { FileModule } from './files/files.module';
+import { FileController } from './files/files.controller';
+import { FileService } from './files/files.service';
+import { UsersController } from './users/users.controller';
 
 @Module({
   imports: [
@@ -33,27 +37,47 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configservice: ConfigService) => configservice.get('typeorm')
+      useFactory: (configservice: ConfigService) =>
+        configservice.get('typeorm'),
     }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '12h' },
     }),
-    TypeOrmModule.forFeature([Seller, User, Fair, UserFairRegistration, SellerFairRegistration]),
+    TypeOrmModule.forFeature([
+      Seller,
+      User,
+      Fair,
+      UserFairRegistration,
+      SellerFairRegistration,
+    ]),
     UsersModule,
     SellerModule,
     AuthModule,
     FairsModule,
-    ProductsModule
+    ProductsModule,
+    FileModule,
   ],
-  controllers: [AppController, SellerController, AuthController],
-  providers: [AppService, SellerService, AuthService, UsersService, UserRepository, SellerRepository],
+  controllers: [
+    AppController,
+    SellerController,
+    AuthController,
+    FileController,
+    UsersController,
+  ],
+  providers: [
+    AppService,
+    SellerService,
+    AuthService,
+    UsersService,
+    UserRepository,
+    SellerRepository,
+    FileService,
+  ],
 })
 export class AppModule implements NestModule {
   constructor() {}
-
-
 
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');

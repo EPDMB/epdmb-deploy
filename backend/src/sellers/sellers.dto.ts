@@ -100,14 +100,17 @@ export class RegisterSellerDto {
   @IsString()
   @IsOptional()
   profile_picture?: string;
+
   @ApiProperty({
     description: 'Coloque su cuenta bancaria',
   })
   bank_account: string;
+
   @ApiProperty({
     description: 'Coloque su sku',
   })
   sku: string;
+  
   @ApiProperty({
     description: 'Coloque su red social',
   })
