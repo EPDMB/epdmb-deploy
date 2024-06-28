@@ -7,8 +7,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { SellerController } from './sellers/sellers.controller';
-import { SellerService } from './sellers/sellers.service';
 import { SellerModule } from './sellers/sellers.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
@@ -18,9 +16,9 @@ import { Seller } from './sellers/sellers.entity';
 import { User } from './users/users.entity';
 import { UserRepository } from './users/users.repository';
 import { SellerRepository } from './sellers/sellers.repository';
-import { Fair } from './fairs/fairs.entity';
-import { UserFairRegistration } from './user_fair_registration/userFairRegistration.entity';
-import { SellerFairRegistration } from './seller_fair_registration/sellerFairRegistration.entity';
+import { Fair } from './fairs/entities/fairs.entity';
+import { UserFairRegistration } from './fairs/entities/userFairRegistration.entity';
+import { SellerFairRegistration } from './fairs/entities/sellerFairRegistration.entity';
 import { FairsModule } from './fairs/fairs.module';
 import { ProductsModule } from './products/products.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
@@ -28,6 +26,7 @@ import { FileModule } from './files/files.module';
 import { FileController } from './files/files.controller';
 import { FileService } from './files/files.service';
 import { UsersController } from './users/users.controller';
+import { GoogleStrategy } from './auth/auth.google.strategy.js';
 
 @Module({
   imports: [
@@ -61,19 +60,18 @@ import { UsersController } from './users/users.controller';
   ],
   controllers: [
     AppController,
-    SellerController,
     AuthController,
     FileController,
     UsersController,
   ],
   providers: [
     AppService,
-    SellerService,
     AuthService,
     UsersService,
     UserRepository,
     SellerRepository,
     FileService,
+    GoogleStrategy,
   ],
 })
 export class AppModule implements NestModule {

@@ -1,8 +1,8 @@
 import { Seller } from "../sellers/sellers.entity";
-import { Role } from "../roles/roles.enum";
+import { Role } from "./roles/roles.enum";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
-import { UserFairRegistration } from "../user_fair_registration/userFairRegistration.entity";
+import { UserFairRegistration } from "../fairs/entities/userFairRegistration.entity";
 import { ApiHideProperty } from "@nestjs/swagger";
 
 
@@ -42,7 +42,7 @@ export class User {
     @Column({ default: false })
     status: boolean
 
-    @Column({ default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'})
+    @Column({ default: 'https://res.cloudinary.com/dpso5fsug/image/upload/v1719432779/el_placard_de_mi_bebot/scuh9cj2v97xflgtahm8.png'})
     profile_picture?: string;
 
     @Column({ default: false })

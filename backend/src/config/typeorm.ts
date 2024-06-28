@@ -3,9 +3,9 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
-import { Fair } from '../fairs/fairs.entity';
-import { UserFairRegistration } from '../user_fair_registration/userFairRegistration.entity';
-import { SellerFairRegistration } from '../seller_fair_registration/sellerFairRegistration.entity';
+import { Fair } from '../fairs/entities/fairs.entity';
+import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
+import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
 import { User } from '../users/users.entity';
 import { Product } from '../products/products.entity';
 import { Seller } from '../sellers/sellers.entity';
@@ -34,6 +34,7 @@ const config: DataSourceOptions = {
     PaymentTransaction,
     SKU,
   ],
+
   // entities: ['dist/**/*.entity{.ts,.js}'],
   //autoLoadEntities: true,
   migrations: ['dist/src/migrations/*{.ts,.js}'],

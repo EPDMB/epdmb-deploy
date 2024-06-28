@@ -1,10 +1,10 @@
 import { ApiHideProperty } from "@nestjs/swagger";
-import { Product } from "../products/products.entity";
+import { Product } from "../../products/products.entity";
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
-import { UserFairRegistration } from "../user_fair_registration/userFairRegistration.entity";
-import { SellerFairRegistration } from "../seller_fair_registration/sellerFairRegistration.entity";
-import { PaymentTransaction } from "../payment_transaction/paymentTransaction.entity";
+import { SellerFairRegistration } from "../../fairs/entities/sellerFairRegistration.entity";
+import { PaymentTransaction } from "../../payment_transaction/paymentTransaction.entity";
+import { UserFairRegistration } from "./userFairRegistration.entity";
 
 @Entity({ name: 'fair'})
 export class Fair{

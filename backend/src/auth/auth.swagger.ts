@@ -6,7 +6,27 @@ import {
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import { RegisterSellerDto } from '../sellers/sellers.dto';
-import { LoginUserDto, RegisterUserDto } from '../users/users.dto';
+import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from '../users/users.dto';
+
+
+export function getWithGooleSwagger() {
+  return applyDecorators(
+    ApiOperation({
+      summary: 'Registro y logueo de usuario con Google',
+      description:
+        'El usuario se registra y se loguea automáticamente con Google, no debe ingresar datos manualmente, si quiere registrarse como vendedor, debe llenar datos aparte',
+    }),
+    ApiResponse({
+      status: 200,
+      description: 'Usuario verificado correctamente',
+    }),
+    ApiResponse({ status: 400, description: 'Error al verificar el usuaro' }),
+    ApiBadRequestResponse({
+      status: 400,
+      description: 'Error al verificar el email',
+    }),
+  );
+}
 
 export function SignUpUserSwagger() {
   return applyDecorators(
@@ -70,5 +90,44 @@ export function SignInSwagger() {
     ApiResponse({ status: 200, description: 'Sesión iniciada correctamente' }),
     ApiResponse({ status: 401, description: 'Credenciales inválidas' }),
     ApiResponse({ status: 400, description: 'Error al iniciar la sesión' }),
+  );
+}
+
+export function forgotPasswordSwagger() {
+  return applyDecorators(
+    ApiOperation({
+      summary: 'Olvidé mi contraseña (1er paso)',
+      description: 'Al selecciónar "olvide mi contraseña" se envía un correo electrónico con instrucciones para restablecer la contraseña, se envía en el cuerpo de la solicitud el mail para la recuperación.',
+    }),
+    ApiBody({
+      schema: { example: { email: 'example@example.com' } },
+    }),
+    ApiResponse({ status: 200, description: 'Correo electrónico enviado correctamente' }),
+    ApiResponse({ status: 400, description: 'Error al enviar el correo electrónico' }),
+  );
+}
+
+export function resetPasswordSwagger() {
+  return applyDecorators(
+    ApiOperation({
+      summary: 'Restablecer contraseña (2do paso)',
+      description: 'En el mail, seleccionar "restalecer contraseña", esto te redirige al formulario para ingresar tu nueva contraseña y la confirmación.',
+    }),
+    ApiBody({
+      type: ResetPasswordDto,
+      schema: { example: { password: 'QueOnditaMiPandita123456', confirmPassword: 'QueOnditaMiPandita123456' } },
+    }),
+    ApiResponse({ status: 200, description: 'Contraseña restablecida correctamente' }),
+    ApiResponse({ status: 400, description: 'Error al restablecer la contraseña' }),
+  );
+}
+
+
+
+export function getProtectedSwagger() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Protección de la ruta del inicio de Google', description: 'Ruta de protección de Google' }),
+    ApiResponse({ status: 200, description: 'Token verificado correctamente' }),
+    ApiResponse({ status: 401, description: 'Token inválido' }),
   );
 }

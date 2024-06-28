@@ -1,6 +1,6 @@
 import { ApiHideProperty } from '@nestjs/swagger';
-import { Fair } from '../fairs/fairs.entity';
-import { User } from '../users/users.entity';
+import { Fair } from './fairs.entity';
+import { User } from '../../users/users.entity';
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, JoinColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 

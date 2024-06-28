@@ -1,7 +1,7 @@
 import { ApiHideProperty } from "@nestjs/swagger";
 import { PaymentTransaction } from "../payment_transaction/paymentTransaction.entity";
 import { Product } from "../products/products.entity";
-import { SellerFairRegistration } from "../seller_fair_registration/sellerFairRegistration.entity";
+import { SellerFairRegistration } from "../fairs/entities/sellerFairRegistration.entity";
 import { User } from "../users/users.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';

@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Seller } from '../sellers/sellers.entity';
-import { UserRepository } from '../users/users.repository';
 import { RegisterSellerDto } from './sellers.dto.js';
-import { Role } from '../roles/roles.enum';
+import { Role } from '../users/roles/roles.enum';
 import { User } from '../users/users.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class SellerRepository {
   constructor(
     @InjectRepository(Seller)
     private readonly sellerRepository: Repository<Seller>,
-    private readonly userRepository: UserRepository,
+    private readonly userService: UsersService,
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
   ) {}
   async sellerRegister(
@@ -35,7 +35,7 @@ export class SellerRepository {
     sellerX.social_media = sellerData.social_media;
     await this.sellerRepository.save(sellerX);
 
-    const userRegistered = await this.userRepository.registerUser({
+    const userRegistered = await this.userService.registerUser({
       name,
       lastname,
       email,
@@ -52,7 +52,4 @@ export class SellerRepository {
     return sellerX;
   }
 
-  async findByEmail(email: string) {
-    return await this.usersRepository.findOneBy({ email });
-  }
 }

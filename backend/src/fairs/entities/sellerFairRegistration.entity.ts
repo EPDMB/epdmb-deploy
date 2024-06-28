@@ -1,5 +1,5 @@
-import { Fair } from '../fairs/fairs.entity';
-import { Seller } from '../sellers/sellers.entity';
+import { Fair } from './fairs.entity';
+import { Seller } from '../../sellers/sellers.entity';
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, JoinColumn } from 'typeorm';
 
 @Entity()

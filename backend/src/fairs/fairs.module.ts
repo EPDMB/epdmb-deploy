@@ -3,7 +3,7 @@ import { FairsController } from './fairs.controller';
 import { FairsService } from './fairs.service';
 import { FairsRepository } from './fairs.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Fair } from './fairs.entity';
+import { Fair } from './entities/fairs.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Fair])],

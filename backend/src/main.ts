@@ -3,15 +3,12 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { auth } from 'express-openid-connect';
-import { config as auth0Config } from './config/auth0.config';
 import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env' });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(auth(auth0Config));
   app.useGlobalPipes(new ValidationPipe());
   const swaggerConfig = new DocumentBuilder()
     .setTitle('El placard de mi bebot')
@@ -26,8 +23,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({
-    origin: '*', methods: "GET,PUT,POST,DELETE", allowedHeaders: "Content-Type, Accept",
-  })
+    origin: '*',
+    methods: 'GET,PUT,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept, Authotization',
+  });
   await app.listen(process.env.PORT);
 }
 

@@ -11,8 +11,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { config as dotenvConfig } from 'dotenv';
 import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { UserFairRegistration } from '../user_fair_registration/userFairRegistration.entity';
-import { Fair } from '../fairs/fairs.entity';
+import { GoogleStrategy } from './auth.google.strategy.js';
+import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
+import { Fair } from '../fairs/entities/fairs.entity';
 
 dotenvConfig({ path: '.env' });
 
@@ -28,7 +29,7 @@ dotenvConfig({ path: '.env' });
         },
       },
       defaults: {
-        from: '"El Placard de mi Bebot" <' + process.env.EMAIL + '>',
+        from: '"El Plac" <' + process.env.EMAIL + '>',
       },
       template: {
         dir: join(__dirname, '..', '../templates'),
@@ -40,7 +41,13 @@ dotenvConfig({ path: '.env' });
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserRepository, SellerRepository, UsersService],
+  providers: [
+    AuthService,
+    UserRepository,
+    SellerRepository,
+    UsersService,
+    GoogleStrategy,
+  ],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

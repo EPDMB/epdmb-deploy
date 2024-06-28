@@ -1,4 +1,4 @@
-import { Fair } from '../fairs/fairs.entity';
+import { Fair } from '../fairs/entities/fairs.entity';
 import { Seller } from '../sellers/sellers.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 

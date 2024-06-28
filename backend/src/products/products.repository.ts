@@ -6,6 +6,7 @@ import { Product } from './products.entity';
 import { SKU } from './entities/SKU.entity';
 import { Seller } from '../sellers/sellers.entity';
 import { ProductsDto } from './products.dto';
+import { UpdateProductDTO } from './dtos/UpdateStatus';
 
 @Injectable()
 export class ProductsRepository {
@@ -40,7 +41,6 @@ export class ProductsRepository {
       productEntity.description = product.description;
       productEntity.price = product.price;
       productEntity.photoUrl = product.photoUrl;
-      productEntity.status = product.status;
       productEntity.seller = user;
 
       const savedProduct = await this.productRepository.save(productEntity);
@@ -62,5 +62,22 @@ export class ProductsRepository {
 
   async getProducts(): Promise<Product[]> {
     return await this.productRepository.find({relations: ['sku']});
-}
+  }
+
+  
+  async updateStatus(id: string, updateProduct: UpdateProductDTO) {
+
+    const { status } = updateProduct;
+    const product = await this.productRepository.findOneBy({id});
+
+    if (!product) {
+      throw new NotFoundException(`Producto con id ${id} no encontrado`);
+    }
+
+    product.status = status;
+    await this.productRepository.save(product);
+
+    return product;
+  
+  }
 }

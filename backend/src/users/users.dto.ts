@@ -12,7 +12,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-import { Role } from 'src/roles/roles.enum';
+import { Role } from '../users/roles/roles.enum';
 
 export class RegisterUserDto {
   @IsNotEmpty()
@@ -56,7 +56,7 @@ export class RegisterUserDto {
   @IsString()
   @ApiProperty()
   @MinLength(3)
-  @MaxLength(25)
+  @MaxLength(40)
   @IsOptional()
   @ApiProperty({
     description: 'Coloque su direccion',
@@ -110,4 +110,9 @@ export class RegisterUserDto {
 export class LoginUserDto extends PickType(RegisterUserDto, [
   'email',
   'password',
+]) {}
+
+export class ResetPasswordDto extends PickType(RegisterUserDto, [
+  'password',
+  'confirmPassword'
 ]) {}

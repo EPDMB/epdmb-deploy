@@ -10,8 +10,8 @@ import { Seller } from '../sellers/sellers.entity';
 
 import { CloudinaryConfig } from 'src/config/cloudinary';
 import { UsersModule } from 'src/users/users.module';
-import { Fair } from '../fairs/fairs.entity';
-import { UserFairRegistration } from '../user_fair_registration/userFairRegistration.entity';
+import { Fair } from '../fairs/entities/fairs.entity';
+import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Seller, Fair, UserFairRegistration]), UsersModule],
