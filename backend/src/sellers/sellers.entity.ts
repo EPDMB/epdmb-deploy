@@ -1,10 +1,11 @@
 import { ApiHideProperty } from "@nestjs/swagger";
 import { PaymentTransaction } from "../payment_transaction/paymentTransaction.entity";
-import { Product } from "../products/products.entity";
+import { Product } from "../products/entities/products.entity";
 import { SellerFairRegistration } from "../fairs/entities/sellerFairRegistration.entity";
 import { User } from "../users/users.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
+import { ProductRequest } from "src/products/entities/productRequest.entity";
 
 
 
@@ -19,9 +20,18 @@ export class Seller {
 
     @Column()
     social_media?: string 
+  
+    @Column()
+    phone: string;
+
+    @Column()
+    address: string;
 
     @OneToOne(()=> User, user => user.seller)
     user: User
+
+    @Column({ default: false })
+    isVerified: boolean;
 
     @OneToMany(() => Product, product => product.seller)
     @JoinColumn()
@@ -31,7 +41,7 @@ export class Seller {
     @JoinColumn()
     registrations: SellerFairRegistration[];
 
-    @OneToMany(() => PaymentTransaction, transaction => transaction.seller)
-    @JoinColumn()
-    transactions: PaymentTransaction[];
+
+    @OneToMany(()=> ProductRequest, productRequests => productRequests.seller)
+    productRequests: ProductRequest
 }

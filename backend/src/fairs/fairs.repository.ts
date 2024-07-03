@@ -11,8 +11,7 @@ export class FairsRepository {
   ) {}
 
   async createFair(fairDto: FairDto): Promise<Fair> {
-    const newFair = this.fairRepository.create(fairDto);
-    return await this.fairRepository.save(newFair);
+    return await this.fairRepository.save(fairDto);
   }
 
   async getAllFairs() {
@@ -39,5 +38,9 @@ export class FairsRepository {
     const fair = await this.fairRepository.findOneBy({ id: fairId });
     if (!fair) throw new NotFoundException('Feria no encontrada');
     return fair;
-}
+  }
+
+  async saveFair(fair) {
+    return await this.fairRepository.save(fair);
+  }
 }

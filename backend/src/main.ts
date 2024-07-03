@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env' });
@@ -10,6 +10,7 @@ dotenvConfig({ path: '.env' });
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)))
   const swaggerConfig = new DocumentBuilder()
     .setTitle('El placard de mi bebot')
     .setDescription(
@@ -25,8 +26,11 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
     methods: 'GET,PUT,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept, Authotization',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true,
   });
+
+
   await app.listen(process.env.PORT);
 }
 

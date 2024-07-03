@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -46,16 +47,22 @@ export class AuthController {
   @getWithGooleSwagger()
   @Get('googleLogin')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {}
+  async googleAuth(@Req() req, @Query('role') role: string) {
+    req.role = role;
+  }
 
   @Get('/google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req, @Res() res) {
-    await this.authService.googleLogin(req.user);
-    console.log(req.user);
+    const role = req.role || 'user';
+    await this.authService.googleLogin(req.user, role);
     const user = await this.userService.findByEmail(req.user.email);
     const jwtToken = await this.authService.createJwtToken(user);
-    res.redirect(`http://localhost:3000?token=${jwtToken}`);
+    res
+      .status(HttpStatus.OK)
+      .redirect(
+        `${process.env.FRONTEND_URL}/auth/success/?token=${jwtToken}`,
+      );
     return;
   }
 
@@ -103,6 +110,8 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<void> {
     await this.authService.resetPassword(token, resetPasswordDto, res);
-    res.status(HttpStatus.OK).json({ message: 'Contraseña actualizada exitosamente' })
+    res
+      .status(HttpStatus.OK)
+      .json({ message: 'Contraseña actualizada exitosamente' });
   }
 }

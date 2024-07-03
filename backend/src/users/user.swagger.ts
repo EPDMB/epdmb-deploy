@@ -1,5 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { UpdatePasswordDto } from './users.dto';
 
 export function getAllUserSwagger() {
   return applyDecorators(
@@ -25,14 +26,6 @@ export function registerUserFairSwagger(){
         ApiOperation({
             summary: "Inscripción de un usuario en una feria",
             description: "Registra un usuario en una feria",
-        }),
-        ApiParam({
-            name: "fairId",
-            description: "ID de la feria",
-        }),
-        ApiParam({
-            name: "userId",
-            description: "ID del usuario",
         }),
         ApiResponse({ status: 201, description: "Usuario creado correctamente" }),
         ApiResponse({ status: 400, description: "Error al registrar el usuario" }),
@@ -87,3 +80,18 @@ export function deleteUserSwagger(){
     )
 }
 
+export function updatePasswordSwagger(){
+    return applyDecorators(
+        ApiBearerAuth(),
+        ApiOperation({
+            summary: "Actualizar la contraseña de un usuario",
+            description: "Actualiza la contraseña de un usuario en el sistema",
+        }),
+        ApiBody({
+            description: 'Datos necesarios para modificar la contraseña',
+            type: UpdatePasswordDto,
+          }),
+        ApiResponse({ status: 201, description: "Contraseña modificada correctamente" }),
+        ApiResponse({ status: 400, description: "Error al cambiar la contraseña" }),
+    )
+}

@@ -1,13 +1,31 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Roles } from 'src/users/roles/roles.decorator';
-import { Role } from 'src/users/roles/roles.enum';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { RoleGuard } from 'src/users/roles/roles.guard';
-import { RegisterUserDto } from './users.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { deleteUserSwagger, getAllUserSwagger, getUserByIdSwagger, registerUserFairSwagger, updateUserSwagger } from './user.swagger';
 
+import { Roles } from '../users/roles/roles.decorator';
+import { Role } from '../users/roles/roles.enum';
+import { AuthGuard } from '../auth/auth.guard';
+import { RoleGuard } from '../users/roles/roles.guard';
+
+import { RegisterUserDto, RegisterUserFairDto, UpdatePasswordDto } from './users.dto';
+
+import { ApiTags } from '@nestjs/swagger';
+import {
+  deleteUserSwagger,
+  getAllUserSwagger,
+  getUserByIdSwagger,
+  registerUserFairSwagger,
+  updatePasswordSwagger,
+  updateUserSwagger,
+} from './user.swagger';
 
 @ApiTags('Users')
 @Controller('users')
@@ -18,15 +36,27 @@ export class UsersController {
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RoleGuard)
   @Get()
-  async getAllUsers(){
+  async getAllUsers() {
     return await this.usersService.getAllUsers();
   }
 
-  @registerUserFairSwagger()
+  @updatePasswordSwagger()
+  @Put('update-password/:id')
   @UseGuards(AuthGuard)
-  @Post(':userId/register/fair/:id')
-  async registerUserFair(@Param('id') fairId: string, @Param('userId') userId: string) {
-    return await this.usersService.registerUserFair(fairId, userId);
+  async updatePassword(
+    @Param('id') id: string,
+    @Body() data: UpdatePasswordDto,
+  ) {
+    return await this.usersService.updatePassword(id, data);
+  }
+
+  @Post(':userId/register/fair/:fairId')
+  async registerUserFair(
+    @Param('fairId') fairId: string,
+    @Param('userId') userId: string,
+    @Body() registerUserFairDto: RegisterUserFairDto,
+  ) {
+    return await this.usersService.registerUserFair(fairId, userId, registerUserFairDto);
   }
 
   @getUserByIdSwagger()
@@ -39,15 +69,18 @@ export class UsersController {
   @updateUserSwagger()
   @UseGuards(AuthGuard)
   @Put(':id')
-  async updateUser(@Param('id') id: string, @Body() user: Partial<RegisterUserDto>) {
+  async updateUser(
+    @Param('id') id: string,
+    @Body() user: Partial<RegisterUserDto>,
+  ) {
     return await this.usersService.updateUser(id, user);
   }
 
-  @deleteUserSwagger()  
+  @deleteUserSwagger()
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RoleGuard)
-  @Delete(':id')
-  async deleteUser(@Param('id') id: string) {
-    return await this.usersService.deleteUser(id);
+  @Put(':id')
+  async updateStatusUser(@Param('id') id: string) {
+    return await this.usersService.updateStatusUser(id);
   }
 }

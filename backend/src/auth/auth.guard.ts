@@ -14,11 +14,7 @@ export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.split(' ')[1];
-    const bearer = request.headers.authorization?.split(' ')[0];
 
-    if (!bearer) {
-      throw new NotFoundException('El encabezado Authorization no es el requerido (bearer)');
-    }
     if (!token) {
       throw new NotFoundException('Token no encontrado en el encabezado Authorization');
     }

@@ -34,14 +34,12 @@ export class RegisterSellerDto {
   lastname: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Min(1000000)
-  @Max(99999999)
+  @IsString()
   @ApiProperty({
     description: 'Coloque su DNI',
     example: '25293711',
   })
-  dni: number;
+  dni: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -63,12 +61,12 @@ export class RegisterSellerDto {
   address?: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   @ApiProperty({
     description: 'Coloque su telefono',
     example: '1156229166',
   })
-  phone: number;
+  phone: string;
 
   @IsNotEmpty()
   @MinLength(8)
@@ -103,16 +101,13 @@ export class RegisterSellerDto {
 
   @ApiProperty({
     description: 'Coloque su cuenta bancaria',
+    example: '123456789',
   })
   bank_account: string;
 
   @ApiProperty({
-    description: 'Coloque su sku',
-  })
-  sku: string;
-  
-  @ApiProperty({
     description: 'Coloque su red social',
+    example: 'instagram',
   })
   social_media?: string;
 }

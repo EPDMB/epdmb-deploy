@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import { Product } from './products.entity';
+import { Product } from './entities/products.entity';
 import { SKU } from './entities/SKU.entity';
 import { Seller } from '../sellers/sellers.entity';
-import { ProductsDto } from './products.dto';
-import { UpdateProductDTO } from './dtos/UpdateStatus';
+import { ProductsDto } from './dtos/products.dto';
+import { UpdateProductDTO } from './dtos/UpdateStatus.dto';
+import { FairsService } from '../fairs/fairs.service';
+import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
 
 @Injectable()
 export class ProductsRepository {
@@ -17,13 +18,20 @@ export class ProductsRepository {
     private readonly skuRepository: Repository<SKU>,
     @InjectRepository(Seller)
     private readonly sellerRepository: Repository<Seller>,
+    private readonly fairService: FairsService,
+    @InjectRepository(SellerFairRegistration) private readonly sellerFairRegistrationRepository: Repository<SellerFairRegistration>,
   ) {}
 
-  async createProducts(products: ProductsDto[], userId: string): Promise<Product[]> {
-    const user = await this.sellerRepository.findOne({where: {id: userId}, relations: {user: true}});
+  async createProducts(products: ProductsDto[], sellerId: string, fairId: string): Promise<Product[]> {
+    const user = await this.sellerRepository.findOne({where: {id: sellerId}, relations: {user: true}});
+    const fair = await this.fairService.getFairById(fairId);
+    const fairRegistration = await this.sellerFairRegistrationRepository.findOne({where: {seller: user, fair: fair}});
+    if (!fairRegistration) {
+      throw new NotFoundException('Vendedor no autorizado');
+    }
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Usuario no encontrado');
     }
 
     const skuId = user.id[0] + user.id[1]
@@ -42,6 +50,7 @@ export class ProductsRepository {
       productEntity.price = product.price;
       productEntity.photoUrl = product.photoUrl;
       productEntity.seller = user;
+      productEntity.fair = fair;
 
       const savedProduct = await this.productRepository.save(productEntity);
       productArray.push(savedProduct);
@@ -55,7 +64,6 @@ export class ProductsRepository {
 
       await this.skuRepository.save(sku);
     }
-
     return productArray;
   }
 
@@ -78,6 +86,5 @@ export class ProductsRepository {
     await this.productRepository.save(product);
 
     return product;
-  
   }
 }

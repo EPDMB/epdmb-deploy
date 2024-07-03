@@ -14,12 +14,16 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { GoogleStrategy } from './auth.google.strategy.js';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 import { Fair } from '../fairs/entities/fairs.entity';
+import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
+import { FairsService } from '../fairs/fairs.service';
+import { FairsRepository } from '../fairs/fairs.repository';
+import { IsDniValidConstraint } from './auth.validator';
 
 dotenvConfig({ path: '.env' });
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Seller, UserFairRegistration, Fair]),
+    TypeOrmModule.forFeature([User, Seller, UserFairRegistration, Fair, SellerFairRegistration]),
     MailerModule.forRoot({
       transport: {
         host: process.env.EMAIL_HOST,
@@ -47,6 +51,9 @@ dotenvConfig({ path: '.env' });
     SellerRepository,
     UsersService,
     GoogleStrategy,
+    FairsService,
+    FairsRepository,
+    IsDniValidConstraint
   ],
   exports: [AuthService],
 })

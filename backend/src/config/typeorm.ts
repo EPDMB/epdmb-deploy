@@ -7,10 +7,12 @@ import { Fair } from '../fairs/entities/fairs.entity';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
 import { User } from '../users/users.entity';
-import { Product } from '../products/products.entity';
+import { Product } from '../products/entities/products.entity';
 import { Seller } from '../sellers/sellers.entity';
 import { PaymentTransaction } from '../payment_transaction/paymentTransaction.entity';
 import { SKU } from '../products/entities/SKU.entity';
+import { Category } from '../categories/categories.entity';
+import { ProductRequest } from '../products/entities/productRequest.entity';
 
 dotenvConfig({ path: '.env' });
 
@@ -33,14 +35,14 @@ const config: DataSourceOptions = {
     Seller,
     PaymentTransaction,
     SKU,
+    Category,
+    ProductRequest,
   ],
+  ssl: false, // deshabilitar SSL
 
   // entities: ['dist/**/*.entity{.ts,.js}'],
   //autoLoadEntities: true,
   migrations: ['dist/src/migrations/*{.ts,.js}'],
-  ssl: {
-    rejectUnauthorized: false, // Ajusta esta opción según la configuración de tu servidor PostgreSQL
-}
 };
 
 export default registerAs('typeorm', () => config);

@@ -2,8 +2,8 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEmpty,
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Matches,
@@ -11,8 +11,10 @@ import {
   MaxLength,
   Min,
   MinLength,
+  Validate,
 } from 'class-validator';
 import { Role } from '../users/roles/roles.enum';
+import { IsDniValidConstraint } from 'src/auth/auth.validator';
 
 export class RegisterUserDto {
   @IsNotEmpty()
@@ -35,15 +37,13 @@ export class RegisterUserDto {
   })
   lastname: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1000000)
-  @Max(99999999)
+  @IsString()
+  @Validate(IsDniValidConstraint)
   @ApiProperty({
     description: 'Coloque su DNI',
     example: '25293711',
   })
-  dni: number;
+  dni?: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -53,24 +53,24 @@ export class RegisterUserDto {
   })
   email: string;
 
-  @IsString()
-  @ApiProperty()
-  @MinLength(3)
-  @MaxLength(40)
-  @IsOptional()
-  @ApiProperty({
-    description: 'Coloque su direccion',
-    example: 'Calle Siempre Viva 123',
-  })
-  address?: string;
+  // @IsString()
+  // @ApiProperty()
+  // @MinLength(3)
+  // @MaxLength(40)
+  // @IsOptional()
+  // @ApiProperty({
+  //   description: 'Coloque su direccion',
+  //   example: 'Calle Siempre Viva 123',
+  // })
+  // address?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @ApiProperty({
-    description: 'Coloque su telefono',
-    example: '1156229166',
-  })
-  phone: number;
+  // @IsNotEmpty()
+  // @IsString()
+  // @ApiProperty({
+  //   description: 'Coloque su telefono',
+  //   example: '1156229166',
+  // })
+  // phone: string;
 
   @IsNotEmpty()
   @MinLength(8)
@@ -104,15 +104,80 @@ export class RegisterUserDto {
   profile_picture?: string;
 
   @IsEmpty()
-  role: Role
+  role: Role;
 }
 
-export class LoginUserDto extends PickType(RegisterUserDto, [
-  'email',
-  'password',
-]) {}
+export class LoginUserDto {
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Coloque su correo',
+    example: 'juanperez@ejemplo.com',
+  })
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: 'Coloque su contraseña',
+    example: 'Password1!',
+  })
+  password: string;
+}
 
 export class ResetPasswordDto extends PickType(RegisterUserDto, [
   'password',
-  'confirmPassword'
+  'confirmPassword',
 ]) {}
+
+export class UpdatePasswordDto {
+  @IsNotEmpty()
+  @MinLength(8)
+  @MaxLength(15)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_\-]).{8,15}$/, {
+    message: 'La contraseña es muy debil',
+  })
+  @ApiProperty({
+    description: 'Coloque su contraseña actual',
+    example: 'Password1!',
+  })
+  @IsString()
+  current_password: string;
+
+  @IsNotEmpty()
+  @MinLength(8)
+  @MaxLength(15)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_\-]).{8,15}$/, {
+    message: 'La contraseña es muy debil',
+  })
+  @ApiProperty({
+    description: 'Coloque su nueva contraseña',
+    example: 'Password2!',
+  })
+  @IsString()
+  newPassword: string;
+
+  @IsNotEmpty()
+  @MinLength(8)
+  @MaxLength(15)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_\-]).{8,15}$/, {
+    message: 'La contraseña es muy debil',
+  })
+  @ApiProperty({
+    description: 'Coloque su nueva contraseña',
+    example: 'Password2!',
+  })
+  @IsString()
+  confirmNewPassword: string;
+}
+
+export class RegisterUserFairDto {
+  @ApiProperty({
+    example: 10,
+    description: 'Hora seleccionada para la inscripción (formato 24 horas)',
+  })
+  @IsInt()
+  @Min(0)
+  @Max(23)
+  selectedHour: number;
+}

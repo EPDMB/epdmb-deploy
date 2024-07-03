@@ -1,10 +1,12 @@
 import { ApiHideProperty } from '@nestjs/swagger';
-import { Fair } from '../fairs/entities/fairs.entity';
-import { Seller } from '../sellers/sellers.entity';
+import { Fair } from '../../fairs/entities/fairs.entity';
+import { Seller } from '../../sellers/sellers.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne, OneToMany } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { SKU } from './entities/SKU.entity';
-import { ProductStatus } from './enum/productStatus.enum';
+import { SKU } from './SKU.entity';
+import { ProductStatus } from '../enum/productStatus.enum';
+import { Category } from '../../categories/categories.entity';
+import { ProductRequest } from './productRequest.entity';
 
 
 @Entity({ name: 'products'})
@@ -31,6 +33,9 @@ export class Product {
   @Column({default: ProductStatus.AMARILLO})
   status: ProductStatus;
 
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
+
   @ManyToOne(() => Seller, seller => seller.products)
   @JoinColumn()
   seller: Seller;
@@ -38,4 +43,7 @@ export class Product {
   @ManyToOne(() => Fair, fair => fair.products)
   @JoinColumn()
   fair: Fair;
+
+  @ManyToOne(()=> ProductRequest, productRequest => productRequest.products)
+  productRequest: ProductRequest
 }

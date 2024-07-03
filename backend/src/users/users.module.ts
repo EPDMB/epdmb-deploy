@@ -6,12 +6,14 @@ import { UserRepository } from './users.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SellerRepository } from '../sellers/sellers.repository';
 import { Seller } from '../sellers/sellers.entity';
-import { Product } from '../products/products.entity';
+import { Product } from '../products/entities/products.entity';
 import { AuthService } from '../auth/auth.service';
 import { requiresAuth } from 'express-openid-connect';
 import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 import { Fair } from '../fairs/entities/fairs.entity';
+import { FairsService } from 'src/fairs/fairs.service';
+import { FairsRepository } from 'src/fairs/fairs.repository';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Fair } from '../fairs/entities/fairs.entity';
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, UserRepository, SellerRepository, AuthService],
+  providers: [UsersService, UserRepository, SellerRepository, AuthService, FairsService, FairsRepository],
   exports: []
 })
 export class UsersModule implements NestModule {

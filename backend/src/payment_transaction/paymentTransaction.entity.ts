@@ -1,6 +1,13 @@
+import { User } from 'src/users/users.entity';
 import { Fair } from '../fairs/entities/fairs.entity';
-import { Seller } from '../sellers/sellers.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class PaymentTransaction {
@@ -15,13 +22,12 @@ export class PaymentTransaction {
 
   @Column()
   transactionType: string;
-  
-  @ManyToOne(() => Seller, seller => seller.transactions)
-  @JoinColumn()
-  seller: Seller;
 
-  @ManyToOne(() => Fair, fair => fair.transactions)
+  @ManyToOne(() => User)
+  @JoinColumn()
+  user: User;
+
+  @ManyToOne(() => Fair, (fair) => fair.transactions)
   @JoinColumn()
   fair: Fair;
-
 }

@@ -1,95 +1,97 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class FairDto {
-  @IsNotEmpty()
-  @MinLength(3)
-  @MaxLength(25)
-  @IsString()
   @ApiProperty({
-    description: 'Coloque el nombre de la feria',
-    example: 'Feriacity',
+    example: 'Feria de Verano',
+    description: 'Nombre de la feria',
   })
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
-  @MinLength(3)
-  @MaxLength(25)
-  @IsString()
   @ApiProperty({
-    description: 'Coloque la direccion de la feria',
-    example: 'Calle falsa 123',
+    example: 'Avenida Principal 123',
+    description: 'Dirección de la feria',
   })
+  @IsString()
+  @IsNotEmpty()
   address: string;
 
-  @IsNotEmpty()
+  @ApiProperty({
+    example: '2024-07-02',
+    description: 'Fecha de inicio de la feria',
+  })
   @IsString()
-  @ApiProperty({
-    description: 'Coloque la fecha de inicio',
-    example: '2022-01-01',
-  })
-  dateStartFair: Date;
+  dateStartFair: string;
 
-  @IsNotEmpty()
+  @ApiProperty({
+    example: '2024-07-03',
+    description: 'Fecha de finalización de la feria',
+  })
   @IsString()
-  @ApiProperty({
-    description: 'Coloque la fecha de inicio',
-    example: '2022-01-01',
-  })
-  dateEndFair: Date;
+  dateEndFair: string;
 
-  @IsNotEmpty()
   @ApiProperty({
-    description: 'Coloque el horario de inicio de la feria',
-    example: 10,
+    example: 9,
+    description: 'Hora de inicio de la feria (formato 24 horas)',
   })
+  @IsInt()
   hourStartFair: number;
 
-  @IsNotEmpty()
   @ApiProperty({
-    description: 'Coloque el horario de inicio de la feria',
-    example: 20,
+    example: 18,
+    description: 'Hora de finalización de la feria (formato 24 horas)',
   })
+  @IsInt()
   hourEndFair: number;
 
-
-  @IsNotEmpty()
-  @IsNumber()
   @ApiProperty({
-    description: 'Coloque el precio de la entrada',
-    example: '100',
+    example: 100,
+    description: 'Precio de entrada a la feria',
   })
+  @IsInt()
   entryPrice: number;
 
-  @IsNotEmpty()
-  @IsString()
   @ApiProperty({
-    description:
-      'Coloque la descripción de la entrada, si es gratutita o no, en caso de que no, especificar el destino de la plata recaudada',
-    example: 'Entrada gratis',
+    example: 'Entrada gratis // lo recaudado es para entidad benéfica ...',
+    description: 'Descripción de la entrada',
   })
+  @IsString()
   entryDescription: string;
 
-  @IsNotEmpty()
-  @IsNumber()
   @ApiProperty({
-    description: 'Coloque el maximo de vendedores',
-    example: '10',
+    example: 50,
+    description: 'Número máximo de vendedores permitidos en la feria',
   })
+  @IsInt()
   maxSellers: number;
 
-  @IsNotEmpty()
-  @IsNumber()
   @ApiProperty({
-    description: 'Coloque el maximo de compradores por hora',
-    example: '10',
+    example: 500,
+    description: 'Número máximo de compradores permitidos en la feria',
   })
+  @IsInt()
   maxBuyers: number;
+
+  @ApiProperty({
+    type: () => BuyerCapacityDto, // Asegúrate de usar type: () => Clase para evitar circular dependency
+    isArray: true,
+    description: 'Capacidades de compradores por hora',
+  })
+  buyerCapacities: BuyerCapacityDto[];
+}
+
+export class BuyerCapacityDto {
+  @ApiProperty({
+    example: 9,
+    description: 'Hora del rango',
+  })
+  hour: number;
+
+  @ApiProperty({
+    example: 100,
+    description: 'Capacidad de compradores para esa hora',
+  })
+  capacity: number;
 }

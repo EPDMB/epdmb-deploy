@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ProductsRepository } from './products.repository';
-import { ProductsDto } from './products.dto';
-import { Product } from './products.entity';
-import { ProductStatusDescription } from './enum/productStatus.enum';
-import { UpdateProductDTO } from './dtos/UpdateStatus';
+import { ProductsRepository } from '../products.repository';
+import { ProductsDto } from '../dtos/products.dto';
+import { Product } from '../entities/products.entity';
+import { ProductStatusDescription } from '../enum/productStatus.enum';
+import { UpdateProductDTO } from '../dtos/UpdateStatus.dto';
 
 @Injectable()
 export class ProductsService {
@@ -11,8 +11,8 @@ export class ProductsService {
         private readonly productsRepository: ProductsRepository
     ) {}
 
-    async createProducts(products: ProductsDto[], usuarioId: string): Promise<Product[]> {
-        return await this.productsRepository.createProducts(products, usuarioId);
+    async createProducts(products: ProductsDto[], sellerId: string, fairId: string): Promise<Product[]> {
+        return await this.productsRepository.createProducts(products, sellerId, fairId);
     }
 
     async getProducts(): Promise<Product[]> {

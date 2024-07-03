@@ -5,7 +5,7 @@ export function createProductsSwagger() {
   return applyDecorators(
     ApiBearerAuth(),
     ApiOperation({
-      summary: 'Crear un producto',
+      summary: 'Subir productos a la feria',
       description:
         'Registra un proyecto en el sistema con los datos requeridos en el ProductDto',
     }),

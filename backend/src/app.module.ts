@@ -27,6 +27,12 @@ import { FileController } from './files/files.controller';
 import { FileService } from './files/files.service';
 import { UsersController } from './users/users.controller';
 import { GoogleStrategy } from './auth/auth.google.strategy.js';
+import { FairsService } from './fairs/fairs.service';
+import { FairsRepository } from './fairs/fairs.repository';
+import { SellerController } from './sellers/seller.controller';
+import { SellerService } from './sellers/seller.service';
+import { CategoriesModule } from './categories/categories.module';
+import { MercadoPagoModule } from './payment_transaction/payments.module.js';
 
 @Module({
   imports: [
@@ -57,12 +63,15 @@ import { GoogleStrategy } from './auth/auth.google.strategy.js';
     FairsModule,
     ProductsModule,
     FileModule,
+    CategoriesModule,
+    MercadoPagoModule,
   ],
   controllers: [
     AppController,
     AuthController,
     FileController,
     UsersController,
+    SellerController,
   ],
   providers: [
     AppService,
@@ -70,8 +79,11 @@ import { GoogleStrategy } from './auth/auth.google.strategy.js';
     UsersService,
     UserRepository,
     SellerRepository,
+    FairsRepository,
     FileService,
     GoogleStrategy,
+    FairsService,
+    SellerService,
   ],
 })
 export class AppModule implements NestModule {
