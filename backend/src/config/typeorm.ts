@@ -38,10 +38,9 @@ const config: DataSourceOptions = {
     Category,
     ProductRequest,
   ],
-  ssl: false, // deshabilitar SSL
-
-  // entities: ['dist/**/*.entity{.ts,.js}'],
-  //autoLoadEntities: true,
+  ssl: {
+    rejectUnauthorized: false
+  },
   migrations: ['dist/src/migrations/*{.ts,.js}'],
 };
 
