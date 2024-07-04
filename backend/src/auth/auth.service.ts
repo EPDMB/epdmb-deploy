@@ -89,7 +89,7 @@ export class AuthService {
   }
 
   async sendEmailVerification(email: string, token: string) {
-    const url = `${process.env.URL}/auth/verify-email/${token}`;
+    const url = `https://myapp-backend-latest.onrender.com/auth/verify-email/${token}`;
     await this.mailService.sendMail({
       to: email,
       subject: 'Confirma tu cuenta',
