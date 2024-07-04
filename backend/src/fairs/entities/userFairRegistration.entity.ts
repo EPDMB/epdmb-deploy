@@ -29,7 +29,10 @@ export class UserFairRegistration {
   endTime: string;
 
   @Column()
-  registratonDay: string;
+  registratonDay: Date;
+
+  @Column()
+  registrationHour: number;
 
   @ManyToOne(() => User, (user) => user.registrations)
   @JoinColumn()

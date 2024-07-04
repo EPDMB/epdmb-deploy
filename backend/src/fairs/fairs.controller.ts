@@ -27,8 +27,8 @@ export class FairsController {
   constructor(private readonly fairsService: FairsService) {}
 
   @CreateFairsSwagger()
-  //@Roles(Role.ADMIN)
-  //@UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
   @Post()
   async createFair(@Body() fair: FairDto) {
     return await this.fairsService.createFair(fair);
@@ -57,8 +57,16 @@ export class FairsController {
   }
 
   @getFairByIdSwagger()
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getFairById(@Param('id') fairId: string) {
     return await this.fairsService.getFairById(fairId);
+  }
+
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Put('close/:id')
+  async closeFair(@Param('id') fairId: string) {
+    return await this.fairsService.closeFair(fairId);
   }
 }

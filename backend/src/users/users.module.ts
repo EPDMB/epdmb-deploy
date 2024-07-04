@@ -14,6 +14,7 @@ import { UserFairRegistration } from '../fairs/entities/userFairRegistration.ent
 import { Fair } from '../fairs/entities/fairs.entity';
 import { FairsService } from 'src/fairs/fairs.service';
 import { FairsRepository } from 'src/fairs/fairs.repository';
+import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { FairsRepository } from 'src/fairs/fairs.repository';
       SellerFairRegistration,
       Fair,
       Product,
+      BuyerCapacity
     ]),
   ],
   controllers: [UsersController],

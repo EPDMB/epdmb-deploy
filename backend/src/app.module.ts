@@ -33,6 +33,7 @@ import { SellerController } from './sellers/seller.controller';
 import { SellerService } from './sellers/seller.service';
 import { CategoriesModule } from './categories/categories.module';
 import { MercadoPagoModule } from './payment_transaction/payments.module.js';
+import { BuyerCapacity } from './fairs/entities/buyersCapacity.entity';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { MercadoPagoModule } from './payment_transaction/payments.module.js';
       Fair,
       UserFairRegistration,
       SellerFairRegistration,
+      BuyerCapacity
     ]),
     UsersModule,
     SellerModule,

@@ -53,25 +53,6 @@ export class RegisterUserDto {
   })
   email: string;
 
-  // @IsString()
-  // @ApiProperty()
-  // @MinLength(3)
-  // @MaxLength(40)
-  // @IsOptional()
-  // @ApiProperty({
-  //   description: 'Coloque su direccion',
-  //   example: 'Calle Siempre Viva 123',
-  // })
-  // address?: string;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // @ApiProperty({
-  //   description: 'Coloque su telefono',
-  //   example: '1156229166',
-  // })
-  // phone: string;
-
   @IsNotEmpty()
   @MinLength(8)
   @MaxLength(15)
@@ -106,7 +87,6 @@ export class RegisterUserDto {
   @IsEmpty()
   role: Role;
 }
-
 export class LoginUserDto {
   @IsEmail()
   @IsNotEmpty()

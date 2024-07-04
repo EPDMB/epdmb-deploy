@@ -23,11 +23,11 @@ export class UsersService {
     });
   }
 
-  async registerUserFair(fairId: string, userId: string, registerUserFairDto: RegisterUserFairDto) {
-    runWithTryCatchNotFoundE(async () => {
-      return await this.userRepository.registerUserFair(fairId, userId, registerUserFairDto);
-    });
-  }
+   async registerUserFair(fairId: string, userId: string, selectedHour: RegisterUserFairDto) {
+     runWithTryCatchNotFoundE(async () => {
+       return await this.userRepository.registerUserFair(fairId, userId, selectedHour);
+     });
+   }
 
   async findByEmail(email: string) {
     return runWithTryCatchNotFoundE(async () => {
@@ -100,7 +100,4 @@ export class UsersService {
   async findByDni(dni: string) {
     return await this.userRepository.findByDni(dni);
   }
-  // async findByPhone(phone: string) {
-  //   return await this.userRepository.findByPhone(phone);
-  // }
 }

@@ -68,14 +68,7 @@ export class FairDto {
   maxSellers: number;
 
   @ApiProperty({
-    example: 500,
-    description: 'Número máximo de compradores permitidos en la feria',
-  })
-  @IsInt()
-  maxBuyers: number;
-
-  @ApiProperty({
-    type: () => BuyerCapacityDto, // Asegúrate de usar type: () => Clase para evitar circular dependency
+    type: () => BuyerCapacityDto, 
     isArray: true,
     description: 'Capacidades de compradores por hora',
   })

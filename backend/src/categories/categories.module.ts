@@ -16,10 +16,7 @@ export class CategoriesModule implements OnModuleInit {
     private categories: string[] = ["0-12 Varon", "0-12 Mujer", "+12 Varon", "+12 Mujer", "Adultos", "Libros/Juguetes"]
     constructor(
         private readonly categoriesService: CategoriesService
-    ){
-        
-    }
-
+    ) {}
     onModuleInit() {
         for(let i = 0; i < this.categories.length; i++) {
             this.categoriesService.createCategory({name: this.categories[i]})

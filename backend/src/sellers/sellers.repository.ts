@@ -29,14 +29,14 @@ export class SellerRepository {
       confirmPassword,
       password,
       dni,
-      phone,
-      address,
       profile_picture,
     } = sellerData;
 
     const sellerX = this.sellerRepository.create();
     sellerX.bank_account = sellerData.bank_account;
     sellerX.social_media = sellerData.social_media;
+    sellerX.phone = sellerData.phone;
+    sellerX.address = sellerData.address
     await this.sellerRepository.save(sellerX);
 
     const userRegistered = await this.userService.registerUser({
@@ -46,8 +46,6 @@ export class SellerRepository {
       confirmPassword,
       password,
       dni,
-      // phone,
-      // address,
       profile_picture,
       role: Role.SELLER,
     });

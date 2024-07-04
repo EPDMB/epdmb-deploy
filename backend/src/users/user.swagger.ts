@@ -20,6 +20,22 @@ export function getAllUserSwagger() {
   );
 }
 
+export function updatePasswordSwagger(){
+    return applyDecorators(
+        ApiBearerAuth(),
+        ApiOperation({
+            summary: "Actualizar la contraseña de un usuario",
+            description: "Actualiza la contraseña de un usuario en el sistema",
+        }),
+        ApiBody({
+            description: 'Datos necesarios para modificar la contraseña',
+            type: UpdatePasswordDto,
+          }),
+        ApiResponse({ status: 201, description: "Contraseña modificada correctamente" }),
+        ApiResponse({ status: 400, description: "Error al cambiar la contraseña" }),
+    )
+}
+
 export function registerUserFairSwagger(){
     return applyDecorators(
         ApiBearerAuth(),
@@ -64,34 +80,18 @@ export function updateUserSwagger(){
     )
 }
 
-export function deleteUserSwagger(){
+export function updateStatusUserSwagger(){
     return applyDecorators(
         ApiBearerAuth(),
         ApiOperation({
-            summary: "Eliminar un usuario",
-            description: "Elimina un usuario del sistema",
+            summary: "Actualizar el estado de un usuario",
+            description: "Actualiza el estado de un usuario en el sistema",
         }),
         ApiParam({
             name: "id",
             description: "ID del usuario",
         }),
-        ApiResponse({ status: 200, description: "Usuario eliminado correctamente" }),
-        ApiResponse({ status: 400, description: "Error al eliminar el usuario" }),
-    )
-}
-
-export function updatePasswordSwagger(){
-    return applyDecorators(
-        ApiBearerAuth(),
-        ApiOperation({
-            summary: "Actualizar la contraseña de un usuario",
-            description: "Actualiza la contraseña de un usuario en el sistema",
-        }),
-        ApiBody({
-            description: 'Datos necesarios para modificar la contraseña',
-            type: UpdatePasswordDto,
-          }),
-        ApiResponse({ status: 201, description: "Contraseña modificada correctamente" }),
-        ApiResponse({ status: 400, description: "Error al cambiar la contraseña" }),
+        ApiResponse({ status: 201, description: "Usuario actualizado correctamente" }),
+        ApiResponse({ status: 400, description: "Error al actualizar el usuario" }),
     )
 }

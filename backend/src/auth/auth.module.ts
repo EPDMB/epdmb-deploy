@@ -18,12 +18,13 @@ import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration
 import { FairsService } from '../fairs/fairs.service';
 import { FairsRepository } from '../fairs/fairs.repository';
 import { IsDniValidConstraint } from './auth.validator';
+import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 
 dotenvConfig({ path: '.env' });
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Seller, UserFairRegistration, Fair, SellerFairRegistration]),
+    TypeOrmModule.forFeature([User, Seller, UserFairRegistration, Fair, SellerFairRegistration, BuyerCapacity]),
     MailerModule.forRoot({
       transport: {
         host: process.env.EMAIL_HOST,

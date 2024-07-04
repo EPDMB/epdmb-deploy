@@ -1,13 +1,10 @@
 import { ApiHideProperty } from "@nestjs/swagger";
-import { PaymentTransaction } from "../payment_transaction/paymentTransaction.entity";
 import { Product } from "../products/entities/products.entity";
 import { SellerFairRegistration } from "../fairs/entities/sellerFairRegistration.entity";
 import { User } from "../users/users.entity";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from 'uuid';
-import { ProductRequest } from "src/products/entities/productRequest.entity";
-
-
+import { ProductRequest } from "../products/entities/productRequest.entity";
 
 @Entity({ name: 'sellers'})
 export class Seller {
@@ -40,7 +37,6 @@ export class Seller {
     @OneToMany(() => SellerFairRegistration, registration => registration.seller)
     @JoinColumn()
     registrations: SellerFairRegistration[];
-
 
     @OneToMany(()=> ProductRequest, productRequests => productRequests.seller)
     productRequests: ProductRequest

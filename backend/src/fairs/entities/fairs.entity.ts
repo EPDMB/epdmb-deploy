@@ -7,6 +7,7 @@ import { UserFairRegistration } from "./userFairRegistration.entity";
 import { Product } from "../../products/entities/products.entity";
 import { Category } from 'src/categories/categories.entity';
 import { ProductRequest } from 'src/products/entities/productRequest.entity';
+import { BuyerCapacity } from './buyersCapacity.entity';
 
 @Entity({ name: 'fair' })
 export class Fair {
@@ -41,11 +42,8 @@ export class Fair {
   @Column()
   maxSellers: number;
 
-  @Column()
-  maxBuyers: number;
-
-  @Column({ type: 'jsonb', nullable: true })
-  buyerCapacities: { hour: number, capacity: number }[];
+  @OneToMany(() => BuyerCapacity, buyerCapacity => buyerCapacity.fair )
+  buyerCapacities: BuyerCapacity[];
 
   @ManyToOne(() => Category , (category) => category.fairs)
   category: Category

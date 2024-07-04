@@ -67,12 +67,10 @@ export class ProductsRepository {
     return productArray;
   }
 
-
   async getProducts(): Promise<Product[]> {
     return await this.productRepository.find({relations: ['sku']});
   }
 
-  
   async updateStatus(id: string, updateProduct: UpdateProductDTO) {
 
     const { status } = updateProduct;

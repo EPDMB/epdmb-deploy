@@ -7,21 +7,28 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
-import { RegisterUserDto, RegisterUserFairDto, UpdatePasswordDto } from './users.dto';
+import {
+  RegisterUserDto,
+  RegisterUserFairDto,
+  UpdatePasswordDto,
+} from './users.dto';
 import * as bcrypt from 'bcrypt';
 import { Fair } from '../fairs/entities/fairs.entity';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as QRCode from 'qrcode';
+import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Fair) private readonly fairRepository: Repository<Fair>,
+    @InjectRepository(BuyerCapacity)
+    private readonly buyerCapacityRepository: Repository<BuyerCapacity>,
     @InjectRepository(UserFairRegistration)
-    private readonly userFair: Repository<UserFairRegistration>,
+    private readonly userFairRegistrationRepository: Repository<UserFairRegistration>,
     private readonly jwtService: JwtService,
     private readonly mailService: MailerService,
   ) {}
@@ -34,34 +41,53 @@ export class UserRepository {
   async findByDni(dni: string) {
     return await this.userRepository.findOneBy({ dni: dni });
   }
-  // async findByPhone(phone: string) {
-  //   return await this.userRepository.findOneBy({ phone: phone });
-  // }
 
-  async registerUserFair(fairId: string, userId: string, registerUserFairDto: RegisterUserFairDto) {
-    const {selectedHour} = registerUserFairDto
-    const fair = await this.fairRepository.findOneBy({ id: fairId });
+  async registerUserFair(
+    fairId: string,
+    userId: string,
+    registerUser: RegisterUserFairDto,
+  ) {
+    const { selectedHour } = registerUser;
+
+    console.log('Selected Hour:', selectedHour);
+
+    const fair = await this.fairRepository.findOne({
+      where: { id: fairId },
+      relations: ['buyerCapacities', 'userRegistrations'],
+    });
     if (!fair) throw new NotFoundException('Feria no encontrada');
+
+    console.log('Fair:', fair);
+
     const user = await this.getUserById(userId);
     if (!user) throw new NotFoundException('Usuario no encontrado');
 
-    const hourCapacity = fair.buyerCapacities.find(capacity => capacity.hour === selectedHour);
+    console.log('User:', user);
 
-    if (!hourCapacity || hourCapacity.capacity <= 0) {
+    const hourCapacity = fair.buyerCapacities.find(
+      (capacity) => capacity.hour === selectedHour,
+    );
+    console.log('Hour Capacity:', hourCapacity);
+
+    if (!hourCapacity) throw new BadRequestException('Horario no válido');
+
+    if (hourCapacity.capacity <= 0) {
       throw new BadRequestException('No hay cupos disponibles en esta hora');
     }
 
-    const registration = new UserFairRegistration();
-    registration.user = user;
-    registration.fair = fair;
-    registration.registrationDate = new Date();
-    registration.startTime = fair.hourStartFair.toString();
-    registration.endTime = fair.hourEndFair.toString();
-    await this.userFair.save(registration);
+    const userRegistration = new UserFairRegistration();
+    userRegistration.user = user;
+    userRegistration.fair = fair;
+    userRegistration.registrationDate = new Date();
+    userRegistration.startTime = fair.hourStartFair.toString();
+    userRegistration.endTime = fair.hourEndFair.toString();
+    userRegistration.registrationHour = selectedHour;
+    userRegistration.entryFee = fair.entryPrice;
+    userRegistration.registratonDay = fair.dateStartFair;
+    await this.userFairRegistrationRepository.save(userRegistration);
 
-    hourCapacity.capacity--;
-
-    await this.fairRepository.save(fair);
+    hourCapacity.capacity -= 1;
+    await this.buyerCapacityRepository.save(hourCapacity);
 
     const token = this.jwtService.sign(
       { email: user.email },
@@ -69,7 +95,7 @@ export class UserRepository {
     );
 
     await this.sendEmailInscriptionFair(user.email, token, fair);
-    return 'usuario registrado en la feria exitosamente, verifique su casilla'
+    return 'usuario registrado en la feria exitosamente, verifique su casilla';
   }
 
   async sendEmailInscriptionFair(email: string, token: string, fair: Fair) {
@@ -114,7 +140,6 @@ export class UserRepository {
   }
 
   async updateUser(id: string, user: Partial<RegisterUserDto>) {
-    // Verificar que el email y el dni no exista
     const userFound = await this.getUserById(id);
     Object.assign(userFound, user);
     await this.userRepository.save(userFound);
@@ -139,8 +164,6 @@ export class UserRepository {
   async updateStatusUser(id: string) {
     const user = await this.getUserById(id);
     user.status = false;
-    //let statusUser = user.status;
-    //statusUser = false;
     await this.userRepository.save(user);
   }
 

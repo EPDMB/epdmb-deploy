@@ -25,4 +25,8 @@ export class FairsService {
   async getFairById(fairId: string) {
     return await this.fairsRepository.getFairById(fairId);
   }
+
+  async closeFair(fairId: string){
+    return await this.fairsRepository.closeFair(fairId);
+  }
 }

@@ -13,6 +13,7 @@ import { PaymentTransaction } from '../payment_transaction/paymentTransaction.en
 import { SKU } from '../products/entities/SKU.entity';
 import { Category } from '../categories/categories.entity';
 import { ProductRequest } from '../products/entities/productRequest.entity';
+import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 
 dotenvConfig({ path: '.env' });
 
@@ -37,9 +38,10 @@ const config: DataSourceOptions = {
     SKU,
     Category,
     ProductRequest,
+    BuyerCapacity
   ],
   ssl: {
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
   },
   migrations: ['dist/src/migrations/*{.ts,.js}'],
 };

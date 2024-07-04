@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
@@ -9,21 +8,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-
 import { Roles } from '../users/roles/roles.decorator';
 import { Role } from '../users/roles/roles.enum';
 import { AuthGuard } from '../auth/auth.guard';
 import { RoleGuard } from '../users/roles/roles.guard';
-
-import { RegisterUserDto, RegisterUserFairDto, UpdatePasswordDto } from './users.dto';
-
+import {
+  RegisterUserDto,
+  RegisterUserFairDto,
+  UpdatePasswordDto,
+} from './users.dto';
 import { ApiTags } from '@nestjs/swagger';
 import {
-  deleteUserSwagger,
   getAllUserSwagger,
   getUserByIdSwagger,
   registerUserFairSwagger,
   updatePasswordSwagger,
+  updateStatusUserSwagger,
   updateUserSwagger,
 } from './user.swagger';
 
@@ -41,8 +41,8 @@ export class UsersController {
   }
 
   @updatePasswordSwagger()
-  @Put('update-password/:id')
   @UseGuards(AuthGuard)
+  @Put('update-password/:id')
   async updatePassword(
     @Param('id') id: string,
     @Body() data: UpdatePasswordDto,
@@ -50,13 +50,19 @@ export class UsersController {
     return await this.usersService.updatePassword(id, data);
   }
 
+  @registerUserFairSwagger()
+  @UseGuards(AuthGuard)
   @Post(':userId/register/fair/:fairId')
   async registerUserFair(
     @Param('fairId') fairId: string,
     @Param('userId') userId: string,
-    @Body() registerUserFairDto: RegisterUserFairDto,
+    @Body() selectedHour: RegisterUserFairDto,
   ) {
-    return await this.usersService.registerUserFair(fairId, userId, registerUserFairDto);
+    return await this.usersService.registerUserFair(
+      fairId,
+      userId,
+      selectedHour,
+    );
   }
 
   @getUserByIdSwagger()
@@ -76,7 +82,7 @@ export class UsersController {
     return await this.usersService.updateUser(id, user);
   }
 
-  @deleteUserSwagger()
+  @updateStatusUserSwagger()
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RoleGuard)
   @Put(':id')

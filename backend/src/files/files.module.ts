@@ -13,10 +13,11 @@ import { UsersModule } from '../users/users.module';
 
 import { Fair } from '../fairs/entities/fairs.entity';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
+import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Seller, Fair, UserFairRegistration]),
+    TypeOrmModule.forFeature([User, Seller, Fair, UserFairRegistration, BuyerCapacity]),
     UsersModule,
   ],
   controllers: [FileController],

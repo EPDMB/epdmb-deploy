@@ -23,11 +23,12 @@ import { UsersService } from '../users/users.service';
 import { User } from '../users/users.entity';
 import { UserRepository } from '../users/users.repository';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
+import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 
 dotenvConfig({ path: '.env'})
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, SKU, Seller, Fair, SellerFairRegistration, ProductRequest, User, UserFairRegistration]),
+  imports: [TypeOrmModule.forFeature([Product, SKU, Seller, Fair, SellerFairRegistration, ProductRequest, User, UserFairRegistration, BuyerCapacity]),
   MailerModule.forRoot({
     transport: {
       host: process.env.EMAIL_HOST,

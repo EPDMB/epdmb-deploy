@@ -2,15 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Matches,
-  Max,
   MaxLength,
-  Min,
   MinLength,
+  Validate,
 } from 'class-validator';
+import { IsDniValidConstraint } from 'src/auth/auth.validator';
 
 export class RegisterSellerDto {
   @IsNotEmpty()
@@ -35,6 +34,7 @@ export class RegisterSellerDto {
 
   @IsNotEmpty()
   @IsString()
+  @Validate(IsDniValidConstraint)
   @ApiProperty({
     description: 'Coloque su DNI',
     example: '25293711',
