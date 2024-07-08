@@ -23,16 +23,10 @@ export class UserFairRegistration {
   entryFee?: number;
 
   @Column()
-  startTime: string;
-
-  @Column()
-  endTime: string;
-
-  @Column()
   registratonDay: Date;
 
   @Column()
-  registrationHour: number;
+  registrationHour: string;
 
   @ManyToOne(() => User, (user) => user.registrations)
   @JoinColumn()

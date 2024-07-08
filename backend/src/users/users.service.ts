@@ -12,41 +12,62 @@ import {
   runWithTryCatchBadRequestE,
   runWithTryCatchNotFoundE,
 } from '../errors/errors';
+import { Role } from './roles/roles.enum';
+import { UserToSellerService } from './services/userToSeller.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
-
+  constructor(private readonly userRepository: UserRepository
+    , private readonly userToSellerService: UserToSellerService
+  ) {}
+  
   async getAllUsers() {
     return runWithTryCatchNotFoundE(async () => {
       return await this.userRepository.getAllUsers();
     });
   }
-
-   async registerUserFair(fairId: string, userId: string, selectedHour: RegisterUserFairDto) {
-     runWithTryCatchNotFoundE(async () => {
-       return await this.userRepository.registerUserFair(fairId, userId, selectedHour);
-     });
-   }
-
-  async findByEmail(email: string) {
-    return runWithTryCatchNotFoundE(async () => {
-      return await this.userRepository.findByEmail(email);
-    });
+  async getUserByEmailAndDni() {
+    return await this.userRepository.getUserByEmailAndDni();
   }
-
-  async getUserById(id: string) {
-    return runWithTryCatchNotFoundE(async () => {
-      return await this.userRepository.getUserById(id);
-    });
-  }
-
-  async updateUser(id: string, user: Partial<RegisterUserDto>) {
-    runWithTryCatchNotFoundE(async () => {
-      await this.userRepository.updateUser(id, user);
-    });
-    return 'Se ha actualizado el usuario';
-  }
+  
+  async registerUserFair(
+    fairId: string,
+    userId: string,
+    selectedHour: RegisterUserFairDto,
+  ) {
+    
+    return await this.userRepository.registerUserFair(
+        fairId,
+        userId,
+        selectedHour,
+      );
+      ;
+    }
+    
+    async findByEmail(email: string) {
+      return runWithTryCatchNotFoundE(async () => {
+        return await this.userRepository.findByEmail(email);
+      });
+    }
+    
+    async getUserById(id: string) {
+      return runWithTryCatchNotFoundE(async () => {
+        return await this.userRepository.getUserById(id);
+      });
+    }
+    
+    async userToSeller(id: string, role: Role) {
+      return runWithTryCatchBadRequestE(async () => {
+        await this.userToSellerService.userToSeller(id, role);
+      });
+    }
+    
+    async updateUser(id: string, user: Partial<RegisterUserDto>) {
+      runWithTryCatchNotFoundE(async () => {
+        await this.userRepository.updateUser(id, user);
+      });
+      return 'Se ha actualizado el usuario';
+    }
 
   async resetPassword(user: User, newPassword: ResetPasswordDto) {
     const { password, confirmPassword } = newPassword;

@@ -14,6 +14,8 @@ import { SKU } from '../products/entities/SKU.entity';
 import { Category } from '../categories/categories.entity';
 import { ProductRequest } from '../products/entities/productRequest.entity';
 import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
+import { FairDay } from 'src/fairs/entities/fairDay.entity';
+import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
 
 dotenvConfig({ path: '.env' });
 
@@ -38,11 +40,16 @@ const config: DataSourceOptions = {
     SKU,
     Category,
     ProductRequest,
-    BuyerCapacity
+    BuyerCapacity,
+    FairDay,
+    FairCategory,
   ],
   ssl: {
     rejectUnauthorized: false,
-  },
+  }, // deshabilitar SSL
+
+  // entities: ['dist/**/*.entity{.ts,.js}'],
+  //autoLoadEntities: true,
   migrations: ['dist/src/migrations/*{.ts,.js}'],
 };
 

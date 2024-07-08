@@ -27,8 +27,8 @@ export class FairsController {
   constructor(private readonly fairsService: FairsService) {}
 
   @CreateFairsSwagger()
-  @Roles(Role.ADMIN)
-  @UseGuards(AuthGuard, RoleGuard)
+  //@Roles(Role.ADMIN)
+  //@UseGuards(AuthGuard, RoleGuard)
   @Post()
   async createFair(@Body() fair: FairDto) {
     return await this.fairsService.createFair(fair);

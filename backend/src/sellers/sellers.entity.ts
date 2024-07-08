@@ -1,43 +1,57 @@
-import { ApiHideProperty } from "@nestjs/swagger";
-import { Product } from "../products/entities/products.entity";
-import { SellerFairRegistration } from "../fairs/entities/sellerFairRegistration.entity";
-import { User } from "../users/users.entity";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ApiHideProperty } from '@nestjs/swagger';
+import { Product } from '../products/entities/products.entity';
+import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
+import { User } from '../users/users.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { ProductRequest } from "../products/entities/productRequest.entity";
+import { ProductRequest } from '../products/entities/productRequest.entity';
+import { SellerStatus } from './sellers.enum';
 
-@Entity({ name: 'sellers'})
+@Entity({ name: 'sellers' })
 export class Seller {
-    @PrimaryGeneratedColumn('uuid')
-    @ApiHideProperty()
-    id: string = uuid()
+  @PrimaryGeneratedColumn('uuid')
+  @ApiHideProperty()
+  id: string = uuid();
 
-    @Column({ unique: true })
-    bank_account: string
+  @Column({ unique: false })
+  bank_account: string;
 
-    @Column()
-    social_media?: string 
-  
-    @Column()
-    phone: string;
+  @Column()
+  social_media?: string;
 
-    @Column()
-    address: string;
+  @Column()
+  phone: string;
 
-    @OneToOne(()=> User, user => user.seller)
-    user: User
+  @Column()
+  address: string;
 
-    @Column({ default: false })
-    isVerified: boolean;
+  @Column()
+  sku: string;
 
-    @OneToMany(() => Product, product => product.seller)
-    @JoinColumn()
-    products: Product[];
+  @OneToOne(() => User, (user) => user.seller)
+  user: User;
 
-    @OneToMany(() => SellerFairRegistration, registration => registration.seller)
-    @JoinColumn()
-    registrations: SellerFairRegistration[];
+  @Column({default: SellerStatus.NO_ACTIVE})
+  status: SellerStatus;
 
-    @OneToMany(()=> ProductRequest, productRequests => productRequests.seller)
-    productRequests: ProductRequest
+  @OneToMany(() => Product, (product) => product.seller)
+  @JoinColumn()
+  products: Product[];
+
+  @OneToMany(
+    () => SellerFairRegistration,
+    (registration) => registration.seller,
+  )
+  @JoinColumn()
+  registrations: SellerFairRegistration[];
+
+  @OneToMany(() => ProductRequest, (productRequests) => productRequests.seller)
+  productRequests: ProductRequest;
 }

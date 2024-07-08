@@ -1,18 +1,16 @@
-import { ApiHideProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { SellerFairRegistration } from "../../fairs/entities/sellerFairRegistration.entity";
-import { PaymentTransaction } from "../../payment_transaction/paymentTransaction.entity";
-import { UserFairRegistration } from "./userFairRegistration.entity";
-import { Product } from "../../products/entities/products.entity";
-import { Category } from 'src/categories/categories.entity';
-import { ProductRequest } from 'src/products/entities/productRequest.entity';
-import { BuyerCapacity } from './buyersCapacity.entity';
+import { FairDay } from './fairDay.entity';
+import { UserFairRegistration } from './userFairRegistration.entity';
+import { SellerFairRegistration } from './sellerFairRegistration.entity';
+import { PaymentTransaction } from '../../payment_transaction/paymentTransaction.entity';
+import { ProductRequest } from '../../products/entities/productRequest.entity';
+import { Category } from '../../categories/categories.entity';
+import { FairCategory } from './fairCategory.entity';
 
 @Entity({ name: 'fair' })
 export class Fair {
   @PrimaryGeneratedColumn('uuid')
-  @ApiHideProperty()
   id: string = uuid();
 
   @Column()
@@ -22,49 +20,29 @@ export class Fair {
   address: string;
 
   @Column()
-  dateStartFair: Date;
+  entryPriceSeller: number;
 
   @Column()
-  dateEndFair: Date;
-
-  @Column()
-  hourStartFair: number;
-
-  @Column()
-  hourEndFair: number;
-
-  @Column()
-  entryPrice: number;
+  entryPriceBuyer: number;
 
   @Column()
   entryDescription: string;
 
-  @Column()
-  maxSellers: number;
-
-  @OneToMany(() => BuyerCapacity, buyerCapacity => buyerCapacity.fair )
-  buyerCapacities: BuyerCapacity[];
-
-  @ManyToOne(() => Category , (category) => category.fairs)
-  category: Category
+  @OneToMany(() => FairDay, fairDay => fairDay.fair)
+  fairDays: FairDay[];
 
   @OneToMany(() => UserFairRegistration, registrations => registrations.fair)
-  @JoinColumn()
   userRegistrations: UserFairRegistration[];
 
   @OneToMany(() => SellerFairRegistration, registrations => registrations.fair)
-  @JoinColumn()
   sellerRegistrations: SellerFairRegistration[];
 
-  @OneToMany(() => Product, product => product.fair)
-  @JoinColumn()
-  products: Product[];
-
   @OneToMany(() => PaymentTransaction, transaction => transaction.fair)
-  @JoinColumn()
   transactions: PaymentTransaction[];
 
-  @OneToMany(()=> ProductRequest, productRequest => productRequest.fair)
-  productRequests: ProductRequest[]
+  @OneToMany(() => ProductRequest, productRequest => productRequest.fair)
+  productRequests: ProductRequest[];
 
+  @OneToMany(() => FairCategory, fairCategory => fairCategory.fair)
+  fairCategories: FairCategory[] | FairCategory;
 }

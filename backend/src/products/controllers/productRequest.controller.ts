@@ -16,15 +16,13 @@ export class ProductRequestController {
         async createProductRequest(@Body() createProductRequestDto: CreateProductRequestDto ){
             const productRequest = await this.productRequestService.createProductRequest(createProductRequestDto)
             await this.notificationService.sendNotificationToAdmin(createProductRequestDto)
+            return {message: "Productos cargados, seran revisados por el administrador"}
         }
 
-    @Get(':id')
-        async getProductRequest(@Param('id') id: string ){
-
-        }
 
     @Put(':id')
         async updateProductRequest(@Param('id') id: string, @Body() updateProductRequestDto: UpdateProductRequestDto ){
             const productRequest = await this.productRequestService.updateProductRequest(id, updateProductRequestDto)
+            return {message:"Los productos se han aceptado correctamente"}
         }
 }

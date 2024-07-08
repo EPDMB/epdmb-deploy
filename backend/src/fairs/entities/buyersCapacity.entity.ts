@@ -1,18 +1,20 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { Fair } from "./fairs.entity";
+import { FairDay } from './fairDay.entity';
+import { Exclude } from 'class-transformer';
 
-@Entity()
+@Entity({ name: 'buyer_capacity' })
 export class BuyerCapacity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+  @PrimaryGeneratedColumn('uuid')
+  id: string = uuid();
 
-    @Column()
-    capacity: number;
+  @Column()
+  hour: string;
 
-    @Column()
-    hour: number;
+  @Column({ default: 10 })
+  capacity: number;
 
-    @ManyToOne(()=> Fair, fair => fair.buyerCapacities)
-    fair: Fair
+  @ManyToOne(() => FairDay, fairDay => fairDay.buyerCapacities)
+  @Exclude()
+  fairDay: FairDay;
 }

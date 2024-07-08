@@ -15,6 +15,10 @@ import { Fair } from '../fairs/entities/fairs.entity';
 import { FairsService } from 'src/fairs/fairs.service';
 import { FairsRepository } from 'src/fairs/fairs.repository';
 import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
+import { FairDay } from 'src/fairs/entities/fairDay.entity';
+import { Category } from 'src/categories/categories.entity';
+import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
+import { UserToSellerService } from './services/userToSeller.service';
 
 @Module({
   imports: [
@@ -25,11 +29,15 @@ import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
       SellerFairRegistration,
       Fair,
       Product,
-      BuyerCapacity
+      BuyerCapacity,
+      FairDay,
+      Category,
+      FairsRepository,
+      FairCategory
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, UserRepository, SellerRepository, AuthService, FairsService, FairsRepository],
+  providers: [UsersService, UserRepository, SellerRepository, AuthService, FairsService, FairsRepository, UserToSellerService],
   exports: []
 })
 export class UsersModule implements NestModule {

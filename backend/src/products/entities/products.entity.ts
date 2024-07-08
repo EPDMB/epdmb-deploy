@@ -30,7 +30,7 @@ export class Product {
   @OneToOne(() => SKU, sku => sku.product)
   sku: SKU;
 
-  @Column({default: ProductStatus.AMARILLO})
+  @Column({default: ProductStatus.BLANCO})
   status: ProductStatus;
 
   @ManyToOne(() => Category, (category) => category.products)
@@ -39,10 +39,6 @@ export class Product {
   @ManyToOne(() => Seller, seller => seller.products)
   @JoinColumn()
   seller: Seller;
-
-  @ManyToOne(() => Fair, fair => fair.products)
-  @JoinColumn()
-  fair: Fair;
 
   @ManyToOne(()=> ProductRequest, productRequest => productRequest.products)
   productRequest: ProductRequest

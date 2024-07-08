@@ -34,6 +34,10 @@ import { SellerService } from './sellers/seller.service';
 import { CategoriesModule } from './categories/categories.module';
 import { MercadoPagoModule } from './payment_transaction/payments.module.js';
 import { BuyerCapacity } from './fairs/entities/buyersCapacity.entity';
+import { FairDay } from './fairs/entities/fairDay.entity';
+import { Category } from './categories/categories.entity';
+import { FairCategory } from './fairs/entities/fairCategory.entity';
+import { UserToSellerService } from './users/services/userToSeller.service';
 
 @Module({
   imports: [
@@ -57,7 +61,10 @@ import { BuyerCapacity } from './fairs/entities/buyersCapacity.entity';
       Fair,
       UserFairRegistration,
       SellerFairRegistration,
-      BuyerCapacity
+      BuyerCapacity,
+      FairDay,
+      Category,
+      FairCategory
     ]),
     UsersModule,
     SellerModule,
@@ -86,6 +93,7 @@ import { BuyerCapacity } from './fairs/entities/buyersCapacity.entity';
     GoogleStrategy,
     FairsService,
     SellerService,
+    UserToSellerService
   ],
 })
 export class AppModule implements NestModule {

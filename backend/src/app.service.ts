@@ -6,7 +6,7 @@ import { UsersService } from './users/users.service';
 @Injectable()
 export class AppService implements OnModuleInit {
   constructor(private readonly userService: UsersService) {}
-  
+
   async onModuleInit() {
     const admin = {
       name: 'admincito',
@@ -22,13 +22,10 @@ export class AppService implements OnModuleInit {
       status: true,
       isVerified: true,
     };
-    
+
     const existingAdmin = await this.userService.findByEmail(admin.email);
     if (!existingAdmin) {
       await this.userService.registerUser(admin);
     }
-  }
-  getHello(): string {
-    return "Bienvenido a la API de El Plac, para ir a swagger es /api";
   }
 }

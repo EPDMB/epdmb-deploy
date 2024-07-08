@@ -1,19 +1,20 @@
-import { Fair } from "../fairs/entities/fairs.entity";
-import { Product } from "../products/entities/products.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Fair } from '../fairs/entities/fairs.entity';
+import { Product } from '../products/entities/products.entity';
+import { FairCategory } from '../fairs/entities/fairCategory.entity';
 
 @Entity({ name: 'categories' })
 export class Category {
-    @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+  @PrimaryGeneratedColumn('uuid')
+  id: string = uuid();
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @OneToMany(() => Product, (product) => product.category)
-    products: Product[]
+  @OneToMany(() => Product, product => product.category)
+  products: Product[];
 
-    @OneToMany(() => Fair , (fair) => fair.category)
-    fairs: Fair[]
+  @OneToMany(() => FairCategory, fairCategory => fairCategory.category)
+  fairCategories: FairCategory[] | FairCategory;
 }

@@ -13,6 +13,7 @@ import { Role } from '../users/roles/roles.enum';
 import { AuthGuard } from '../auth/auth.guard';
 import { RoleGuard } from '../users/roles/roles.guard';
 import {
+  
   RegisterUserDto,
   RegisterUserFairDto,
   UpdatePasswordDto,
@@ -40,6 +41,11 @@ export class UsersController {
     return await this.usersService.getAllUsers();
   }
 
+  @Get('uniquedata')
+  async getUserByEmailAndDni() {
+    return await this.usersService.getUserByEmailAndDni();
+  }
+
   @updatePasswordSwagger()
   @UseGuards(AuthGuard)
   @Put('update-password/:id')
@@ -51,7 +57,7 @@ export class UsersController {
   }
 
   @registerUserFairSwagger()
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @Post(':userId/register/fair/:fairId')
   async registerUserFair(
     @Param('fairId') fairId: string,
@@ -70,6 +76,12 @@ export class UsersController {
   @Get(':id')
   async getUserById(@Param('id') id: string) {
     return await this.usersService.getUserById(id);
+  }
+
+  @Put('userToSeller/:id')
+  async userToSeller(@Param('id') id: string, @Body('role') role: Role) {
+    const ola = await this.usersService.userToSeller(id, role);
+    return {message: "userToSeller", ola}
   }
 
   @updateUserSwagger()

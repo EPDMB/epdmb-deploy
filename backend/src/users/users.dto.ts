@@ -156,8 +156,13 @@ export class RegisterUserFairDto {
     example: 10,
     description: 'Hora seleccionada para la inscripción (formato 24 horas)',
   })
-  @IsInt()
-  @Min(0)
-  @Max(23)
-  selectedHour: number;
+  @IsString()
+  selectedHour: string;
+
+  @ApiProperty({
+    example: 'Monday',
+    description: 'Dia seleccionado para la inscripción',
+  })
+  @IsNotEmpty()
+  selectedDay: Date;
 }

@@ -19,29 +19,41 @@ export class ProductsRepository {
     @InjectRepository(Seller)
     private readonly sellerRepository: Repository<Seller>,
     private readonly fairService: FairsService,
-    @InjectRepository(SellerFairRegistration) private readonly sellerFairRegistrationRepository: Repository<SellerFairRegistration>,
+    @InjectRepository(SellerFairRegistration)
+    private readonly sellerFairRegistrationRepository: Repository<SellerFairRegistration>,
   ) {}
 
-  async createProducts(products: ProductsDto[], sellerId: string, fairId: string): Promise<Product[]> {
-    const user = await this.sellerRepository.findOne({where: {id: sellerId}, relations: {user: true}});
+  async createProducts(
+    products: ProductsDto[],
+    sellerId: string,
+    fairId: string,
+  ): Promise<Product[]> {
+    const user = await this.sellerRepository.findOne({
+      where: { id: sellerId },
+      relations: { user: true },
+    });
+
     const fair = await this.fairService.getFairById(fairId);
-    const fairRegistration = await this.sellerFairRegistrationRepository.findOne({where: {seller: user, fair: fair}});
+
+    //VERFICIAR QUE EL STATUS DEL VENDEDOR ESTE ACTIVE PARA PODER CARGAR LOS PRODUCTOS??
+    const sellerActivate = user.user.seller.status;
+    if (sellerActivate === 'NO_ACTIVE' || sellerActivate === 'PENDING') {
+      throw new NotFoundException('Vendedor no autorizado a cargar los productos');
+    }
+
+    const fairRegistration =
+      await this.sellerFairRegistrationRepository.findOne({
+        where: { seller: user, fair: fair },
+      });
     if (!fairRegistration) {
-      throw new NotFoundException('Vendedor no autorizado');
+      throw new NotFoundException('Vendedor no registrado en la feria');
     }
 
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    const skuId = user.id[0] + user.id[1]
     const productArray: Product[] = [];
-    const splitname = user.user.name.split(' ')
-    splitname.push(user.user.lastname)
-    const initials = splitname.map((element)=>{
-      return element[0]
-    } )
-    const joinedInitials = initials.join('');
 
     for (const product of products) {
       const productEntity = new Product();
@@ -50,13 +62,12 @@ export class ProductsRepository {
       productEntity.price = product.price;
       productEntity.photoUrl = product.photoUrl;
       productEntity.seller = user;
-      productEntity.fair = fair;
 
       const savedProduct = await this.productRepository.save(productEntity);
       productArray.push(savedProduct);
 
       const skuCount = await this.skuRepository.count();
-      const code = `${joinedInitials+skuId}-${(skuCount + 1).toString().padStart(3, '0')}`;
+      const code = `${user.sku}-${(skuCount + 1).toString().padStart(3, '0')}`;
 
       const sku = new SKU();
       sku.code = code;
@@ -68,13 +79,12 @@ export class ProductsRepository {
   }
 
   async getProducts(): Promise<Product[]> {
-    return await this.productRepository.find({relations: ['sku']});
+    return await this.productRepository.find({ relations: ['sku'] });
   }
 
   async updateStatus(id: string, updateProduct: UpdateProductDTO) {
-
     const { status } = updateProduct;
-    const product = await this.productRepository.findOneBy({id});
+    const product = await this.productRepository.findOneBy({ id });
 
     if (!product) {
       throw new NotFoundException(`Producto con id ${id} no encontrado`);

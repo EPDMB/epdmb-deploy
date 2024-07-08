@@ -5,6 +5,7 @@ export enum ProductStatus {
     CELESTE = 'CELESTE',
     VERDE = 'VERDE',
     GRIS = 'GRIS',
+    BLANCO = 'BLANCO',
   }
   
 export const ProductStatusDescription = {
@@ -14,4 +15,5 @@ export const ProductStatusDescription = {
     CELESTE: 'Producto de segunda marca',
     VERDE: 'Producto vendido',
     GRIS: 'Producto Aceptado',
+    BLANCO: 'Producto pendiente de verificacion'
   };

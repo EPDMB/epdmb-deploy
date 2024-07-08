@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
 import {
+  
   RegisterUserDto,
   RegisterUserFairDto,
   UpdatePasswordDto,
@@ -19,10 +20,13 @@ import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as QRCode from 'qrcode';
 import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
+import { FairDay } from 'src/fairs/entities/fairDay.entity';
+import { Seller } from 'src/sellers/sellers.entity';
 
 @Injectable()
 export class UserRepository {
   constructor(
+    @InjectRepository(Seller) private readonly sellerRepository: Repository<Seller>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Fair) private readonly fairRepository: Repository<Fair>,
     @InjectRepository(BuyerCapacity)
@@ -31,6 +35,8 @@ export class UserRepository {
     private readonly userFairRegistrationRepository: Repository<UserFairRegistration>,
     private readonly jwtService: JwtService,
     private readonly mailService: MailerService,
+    @InjectRepository(FairDay)
+    private readonly fairDayRepository: Repository<FairDay>,
   ) {}
 
   async getAllUsers() {
@@ -41,53 +47,52 @@ export class UserRepository {
   async findByDni(dni: string) {
     return await this.userRepository.findOneBy({ dni: dni });
   }
+  async getUserByEmailAndDni() {
+    const userInfo = await this.userRepository.find({select: ['email', 'dni'] });
+    const sellerInfo = await this.sellerRepository.find({select: ['bank_account']});
+
+    return {userInfo, sellerInfo}
+  }
 
   async registerUserFair(
     fairId: string,
     userId: string,
     registerUser: RegisterUserFairDto,
   ) {
-    const { selectedHour } = registerUser;
-
-    console.log('Selected Hour:', selectedHour);
+    const { selectedHour, selectedDay } = registerUser;
 
     const fair = await this.fairRepository.findOne({
       where: { id: fairId },
-      relations: ['buyerCapacities', 'userRegistrations'],
+      relations: { fairDays: { buyerCapacities: true } },
     });
     if (!fair) throw new NotFoundException('Feria no encontrada');
-
-    console.log('Fair:', fair);
 
     const user = await this.getUserById(userId);
     if (!user) throw new NotFoundException('Usuario no encontrado');
 
-    console.log('User:', user);
+    const buyerCapacity = fair.fairDays
+      .map((day) => day.buyerCapacities)
+      .flat();
+    console.log(buyerCapacity)
 
-    const hourCapacity = fair.buyerCapacities.find(
-      (capacity) => capacity.hour === selectedHour,
-    );
-    console.log('Hour Capacity:', hourCapacity);
+    const hourDay = buyerCapacity.find((hour) => hour.hour === selectedHour);
 
-    if (!hourCapacity) throw new BadRequestException('Horario no válido');
-
-    if (hourCapacity.capacity <= 0) {
+    if (hourDay.capacity <= 0) {
       throw new BadRequestException('No hay cupos disponibles en esta hora');
     }
 
+    hourDay.capacity -= 1;
+    await this.buyerCapacityRepository.save(hourDay);
+
     const userRegistration = new UserFairRegistration();
+    userRegistration.registrationDate = new Date();
+    userRegistration.entryFee = fair.entryPriceBuyer;
+    userRegistration.registratonDay = selectedDay;
+    userRegistration.registrationHour = selectedHour;
     userRegistration.user = user;
     userRegistration.fair = fair;
-    userRegistration.registrationDate = new Date();
-    userRegistration.startTime = fair.hourStartFair.toString();
-    userRegistration.endTime = fair.hourEndFair.toString();
-    userRegistration.registrationHour = selectedHour;
-    userRegistration.entryFee = fair.entryPrice;
-    userRegistration.registratonDay = fair.dateStartFair;
-    await this.userFairRegistrationRepository.save(userRegistration);
 
-    hourCapacity.capacity -= 1;
-    await this.buyerCapacityRepository.save(hourCapacity);
+    await this.userFairRegistrationRepository.save(userRegistration);
 
     const token = this.jwtService.sign(
       { email: user.email },
@@ -99,7 +104,7 @@ export class UserRepository {
   }
 
   async sendEmailInscriptionFair(email: string, token: string, fair: Fair) {
-    const url = `${process.env.URL_FRONT}/fair/${token}`;
+    const url = `${process.env.FRONTEND_URL}/fair/${token}`;
     const user = await this.findByEmail(email);
     const name = user.name;
     const DNI = user.dni;
@@ -134,7 +139,7 @@ export class UserRepository {
   }
 
   async getUserById(id: string) {
-    const user = await this.userRepository.findOneBy({ id: id });
+    const user = await this.userRepository.findOne({where: {id:id}, relations: {seller:true} }  );
     if (!user) throw new NotFoundException('El usuario no existe');
     return user;
   }

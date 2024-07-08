@@ -32,12 +32,4 @@ export class ProductsDto {
   @IsString()
   @IsNotEmpty()
   photoUrl: string;
-
-  @ApiProperty({
-    description: 'El estado del producto',
-    example: 'Activo',
-  })
-  @IsString()
-  @IsNotEmpty()
-  status: string;
 }

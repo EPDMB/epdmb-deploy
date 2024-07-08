@@ -24,11 +24,15 @@ import { User } from '../users/users.entity';
 import { UserRepository } from '../users/users.repository';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
+import { Category } from 'src/categories/categories.entity';
+import { FairDay } from 'src/fairs/entities/fairDay.entity';
+import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
+import { UserToSellerService } from 'src/users/services/userToSeller.service';
 
 dotenvConfig({ path: '.env'})
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, SKU, Seller, Fair, SellerFairRegistration, ProductRequest, User, UserFairRegistration, BuyerCapacity]),
+  imports: [TypeOrmModule.forFeature([Product, SKU, Seller, Fair, SellerFairRegistration, ProductRequest, User, UserFairRegistration, BuyerCapacity, Category, FairDay, FairCategory]),
   MailerModule.forRoot({
     transport: {
       host: process.env.EMAIL_HOST,
@@ -49,6 +53,6 @@ dotenvConfig({ path: '.env'})
     },
   }),],
   controllers: [ProductsController, ProductRequestController],
-  providers: [ProductsRepository, ProductsService, FairsService, FairsRepository, ProductRequestService, NotificationService, SellerRepository, UsersService, UserRepository],
+  providers: [ProductsRepository, ProductsService, FairsService, FairsRepository, ProductRequestService, NotificationService, SellerRepository, UsersService, UserRepository, UserToSellerService],
 })
 export class ProductsModule {}

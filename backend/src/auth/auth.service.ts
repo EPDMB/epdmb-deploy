@@ -192,7 +192,7 @@ export class AuthService {
       }
       await this.userService.resetPassword(user, resetPasswordDto);
 
-      const redirectUrl = `${process.env.URL_FRONT}/login`;
+      const redirectUrl = `${process.env.FRONTEND_URL}/login`;
       return res.redirect(redirectUrl);
     } catch (error) {
       throw new InternalServerErrorException('Token inválido o expirado');
