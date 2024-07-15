@@ -8,13 +8,12 @@ import {
 import { RegisterSellerDto } from '../sellers/sellers.dto';
 import { LoginUserDto, RegisterUserDto, ResetPasswordDto } from '../users/users.dto';
 
-
 export function getWithGooleSwagger() {
   return applyDecorators(
     ApiOperation({
       summary: 'Registro y logueo de usuario con Google',
       description:
-        'El usuario se registra y se loguea automáticamente con Google, no debe ingresar datos manualmente, si quiere registrarse como vendedor, debe llenar datos aparte',
+        'El usuario se registra y se loguea automáticamente con Google, no se prueba con swagger',
     }),
     ApiResponse({
       status: 200,
@@ -121,8 +120,6 @@ export function resetPasswordSwagger() {
     ApiResponse({ status: 400, description: 'Error al restablecer la contraseña' }),
   );
 }
-
-
 
 export function getProtectedSwagger() {
   return applyDecorators(

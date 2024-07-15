@@ -4,7 +4,6 @@ import { ProductsRepository } from './products.repository';
 import { ProductsService } from './services/products.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/products.entity';
-import { SKU } from './entities/SKU.entity';
 import { Seller } from '../sellers/sellers.entity';
 import { FairsService } from 'src/fairs/fairs.service';
 import { Fair } from '../fairs/entities/fairs.entity';
@@ -23,36 +22,62 @@ import { UsersService } from '../users/users.service';
 import { User } from '../users/users.entity';
 import { UserRepository } from '../users/users.repository';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
-import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
-import { Category } from 'src/categories/categories.entity';
-import { FairDay } from 'src/fairs/entities/fairDay.entity';
-import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
-import { UserToSellerService } from 'src/users/services/userToSeller.service';
+import { BuyerCapacity } from '../fairs/entities/buyersCapacity.entity';
+import { Category } from '../categories/categories.entity';
+import { FairDay } from '../fairs/entities/fairDay.entity';
+import { FairCategory } from '../fairs/entities/fairCategory.entity';
+import { UserToSellerService } from '../users/changeRole';
 
-dotenvConfig({ path: '.env'})
+dotenvConfig({ path: '.env' });
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, SKU, Seller, Fair, SellerFairRegistration, ProductRequest, User, UserFairRegistration, BuyerCapacity, Category, FairDay, FairCategory]),
-  MailerModule.forRoot({
-    transport: {
-      host: process.env.EMAIL_HOST,
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD,
+  imports: [
+    TypeOrmModule.forFeature([
+      Product,
+      Seller,
+      Fair,
+      SellerFairRegistration,
+      ProductRequest,
+      User,
+      UserFairRegistration,
+      BuyerCapacity,
+      Category,
+      FairDay,
+      FairCategory,
+    ]),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PASSWORD,
+        },
       },
-    },
-    defaults: {
-      from: '"El Plac" <' + process.env.EMAIL + '>',
-    },
-    template: {
-      dir: join(__dirname, '..', '../templates'),
-      adapter: new HandlebarsAdapter(),
-      options: {
-        strict: true,
+      defaults: {
+        from: '"El Plac" <' + process.env.EMAIL + '>',
       },
-    },
-  }),],
+      template: {
+        dir: join(__dirname, '..', '../templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
+  ],
   controllers: [ProductsController, ProductRequestController],
-  providers: [ProductsRepository, ProductsService, FairsService, FairsRepository, ProductRequestService, NotificationService, SellerRepository, UsersService, UserRepository, UserToSellerService],
+  providers: [
+    ProductsRepository,
+    ProductsService,
+    FairsService,
+    FairsRepository,
+    ProductRequestService,
+    NotificationService,
+    SellerRepository,
+    UsersService,
+    UserRepository,
+    UserToSellerService,
+  ],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

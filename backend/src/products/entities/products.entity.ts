@@ -1,12 +1,10 @@
 import { ApiHideProperty } from '@nestjs/swagger';
-import { Fair } from '../../fairs/entities/fairs.entity';
 import { Seller } from '../../sellers/sellers.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne, OneToMany } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { SKU } from './SKU.entity';
 import { ProductStatus } from '../enum/productStatus.enum';
-import { Category } from '../../categories/categories.entity';
 import { ProductRequest } from './productRequest.entity';
+import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
 
 
 @Entity({ name: 'products'})
@@ -16,7 +14,7 @@ export class Product {
   id: string = uuid()
 
   @Column()
-  name: string;
+  brand: string;
 
   @Column()
   description: string;
@@ -25,21 +23,33 @@ export class Product {
   price: number;
 
   @Column()
+  size: string;
+
+  @Column()
   photoUrl: string;
 
-  @OneToOne(() => SKU, sku => sku.product)
-  sku: SKU;
+  @Column({default: false})
+  liquidation: boolean;
 
-  @Column({default: ProductStatus.BLANCO})
+  @Column()
+  code: string;
+
+  @Column({default: ProductStatus.PENDINGVERICATION})
   status: ProductStatus;
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
+  @Column({default: 'sin categoria'})
+  category: string;
 
   @ManyToOne(() => Seller, seller => seller.products)
   @JoinColumn()
   seller: Seller;
 
-  @ManyToOne(()=> ProductRequest, productRequest => productRequest.products)
-  productRequest: ProductRequest
+  @ManyToOne(() => ProductRequest, productRequest => productRequest.products)
+  @JoinColumn()
+  productRequest: ProductRequest;
+
+  @ManyToOne(() => FairCategory, fairCategory => fairCategory.products )
+  @JoinColumn()
+  fairCategory: FairCategory
+
 }

@@ -1,5 +1,4 @@
 export enum SellerStatus {
-    PENDING = 'PENDING',
-    ACTIVE = 'ACTIVE',
-    NO_ACTIVE = 'NO_ACTIVE',
+    ACTIVE = 'ative',
+    NO_ACTIVE = 'no_active',
 }

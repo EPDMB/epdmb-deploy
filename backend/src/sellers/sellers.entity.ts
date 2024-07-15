@@ -49,9 +49,9 @@ export class Seller {
     () => SellerFairRegistration,
     (registration) => registration.seller,
   )
-  @JoinColumn()
   registrations: SellerFairRegistration[];
 
   @OneToMany(() => ProductRequest, (productRequests) => productRequests.seller)
+  @JoinColumn()
   productRequests: ProductRequest;
 }

@@ -2,84 +2,94 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/products.entity';
-import { SKU } from './entities/SKU.entity';
 import { Seller } from '../sellers/sellers.entity';
 import { ProductsDto } from './dtos/products.dto';
 import { UpdateProductDTO } from './dtos/UpdateStatus.dto';
-import { FairsService } from '../fairs/fairs.service';
-import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
+import { Category } from '../categories/categories.entity';
+import { Fair } from '../fairs/entities/fairs.entity';
+import { SellerFairRegistration } from 'src/fairs/entities/sellerFairRegistration.entity';
+import { ProductRequest } from './entities/productRequest.entity';
+import { StatusProductRequest } from './enum/statusProductRequest.enum';
+
 
 @Injectable()
 export class ProductsRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-    @InjectRepository(SKU)
-    private readonly skuRepository: Repository<SKU>,
     @InjectRepository(Seller)
     private readonly sellerRepository: Repository<Seller>,
-    private readonly fairService: FairsService,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Fair)
+    private readonly fairRepository: Repository<Fair>,
     @InjectRepository(SellerFairRegistration)
     private readonly sellerFairRegistrationRepository: Repository<SellerFairRegistration>,
+    @InjectRepository(ProductRequest) private readonly productRequestRepository: Repository<ProductRequest>,
   ) {}
 
-  async createProducts(
-    products: ProductsDto[],
-    sellerId: string,
-    fairId: string,
-  ): Promise<Product[]> {
-    const user = await this.sellerRepository.findOne({
-      where: { id: sellerId },
-      relations: { user: true },
-    });
+  async createProducts(products: ProductsDto[], sellerId: string, fairId: string, category: string) {
 
-    const fair = await this.fairService.getFairById(fairId);
-
-    //VERFICIAR QUE EL STATUS DEL VENDEDOR ESTE ACTIVE PARA PODER CARGAR LOS PRODUCTOS??
-    const sellerActivate = user.user.seller.status;
-    if (sellerActivate === 'NO_ACTIVE' || sellerActivate === 'PENDING') {
-      throw new NotFoundException('Vendedor no autorizado a cargar los productos');
+    const seller = await this.sellerRepository.findOne({where: { id: sellerId },relations: { products: true },});
+    const productSku = seller?.sku
+    const searchFair = await this.fairRepository.findOneBy({ id: fairId });
+    if(searchFair.isActive === false) {
+      throw new NotFoundException('Feria inactiva');
     }
-
-    const fairRegistration =
-      await this.sellerFairRegistrationRepository.findOne({
-        where: { seller: user, fair: fair },
-      });
-    if (!fairRegistration) {
-      throw new NotFoundException('Vendedor no registrado en la feria');
+    const foundCategory = await this.categoryRepository.findOneBy({name: category})
+    
+    
+    const productRequest = new ProductRequest();
+    productRequest.seller = seller;
+    productRequest.fair = searchFair;
+    productRequest.status = StatusProductRequest.PENDING;
+    productRequest.category = category;
+    
+    const sellerActivate = seller.status;
+    if (sellerActivate === 'no_active' ) {
+      throw new NotFoundException(
+        'Vendedor no autorizado a cargar los productos',
+      );
     }
-
-    if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
-    }
-
-    const productArray: Product[] = [];
-
-    for (const product of products) {
-      const productEntity = new Product();
-      productEntity.name = product.name;
-      productEntity.description = product.description;
-      productEntity.price = product.price;
-      productEntity.photoUrl = product.photoUrl;
-      productEntity.seller = user;
-
-      const savedProduct = await this.productRepository.save(productEntity);
-      productArray.push(savedProduct);
-
-      const skuCount = await this.skuRepository.count();
-      const code = `${user.sku}-${(skuCount + 1).toString().padStart(3, '0')}`;
-
-      const sku = new SKU();
-      sku.code = code;
-      sku.product = savedProduct;
-
-      await this.skuRepository.save(sku);
-    }
-    return productArray;
+    
+    // const fairRegistration = await this.sellerFairRegistrationRepository.findOne({where: { seller: seller, fair: searchFair }});
+    // if (!fairRegistration) {
+      //   throw new NotFoundException('Vendedor no registrado en la feria');
+      // }
+      
+      if (!seller) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      
+      const arrayProducts: Product[] = [];
+      
+      for (const product of products) {
+        const productEntity = new Product();
+        productEntity.brand = product.brand;
+        productEntity.description = product.description;
+        productEntity.price = product.price;
+        productEntity.size = product.size
+        productEntity.photoUrl = product.photoUrl;
+        productEntity.category = product.category;
+        productEntity.liquidation = product.liquidation;
+        // LOGICA DEL SKU
+        const number = seller.products?.length + 1;
+        const newCode = productSku + number;
+        // LOGICA DEL SKU
+        productEntity.code = newCode;
+        const savedProduct = await this.productRepository.save(productEntity);
+        seller.products.push(savedProduct)
+        await this.sellerRepository.save(seller)
+        arrayProducts.push(savedProduct);
+        await this.categoryRepository.save(foundCategory);
+      }
+      productRequest.products = arrayProducts;
+      const newProductRequest = await this.productRequestRepository.save(productRequest);
+      return newProductRequest.id
   }
 
   async getProducts(): Promise<Product[]> {
-    return await this.productRepository.find({ relations: ['sku'] });
+    return await this.productRepository.find();
   }
 
   async updateStatus(id: string, updateProduct: UpdateProductDTO) {
@@ -94,5 +104,9 @@ export class ProductsRepository {
     await this.productRepository.save(product);
 
     return product;
+  }
+
+  async getProductById(id: string): Promise<Product> {
+    return await this.productRepository.findOneBy({ id });
   }
 }

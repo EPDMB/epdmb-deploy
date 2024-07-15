@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
@@ -10,12 +8,11 @@ import { User } from '../users/users.entity';
 import { Product } from '../products/entities/products.entity';
 import { Seller } from '../sellers/sellers.entity';
 import { PaymentTransaction } from '../payment_transaction/paymentTransaction.entity';
-import { SKU } from '../products/entities/SKU.entity';
 import { Category } from '../categories/categories.entity';
 import { ProductRequest } from '../products/entities/productRequest.entity';
-import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
-import { FairDay } from 'src/fairs/entities/fairDay.entity';
-import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
+import { BuyerCapacity } from '../fairs/entities/buyersCapacity.entity';
+import { FairDay } from '../fairs/entities/fairDay.entity';
+import { FairCategory } from '../fairs/entities/fairCategory.entity';
 
 dotenvConfig({ path: '.env' });
 
@@ -37,7 +34,6 @@ const config: DataSourceOptions = {
     Product,
     Seller,
     PaymentTransaction,
-    SKU,
     Category,
     ProductRequest,
     BuyerCapacity,

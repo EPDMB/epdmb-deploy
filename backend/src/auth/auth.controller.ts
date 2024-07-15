@@ -24,6 +24,7 @@ import {
   SignUpUserSwagger,
   forgotPasswordSwagger,
   getAuthSwagger,
+  getProtectedSwagger,
   getWithGooleSwagger,
   resetPasswordSwagger,
 } from './auth.swagger';
@@ -51,6 +52,7 @@ export class AuthController {
     req.role = role;
   }
 
+  @getWithGooleSwagger()
   @Get('/google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req, @Res() res) {
@@ -80,7 +82,7 @@ export class AuthController {
 
   @getAuthSwagger()
   @Get('verify-email/:token')
-  async verifyEmail(@Param('token') token: string, @Res() res: Response) {
+  async verifyEmail(@Param('token') token: string, @Res() res: Response): Promise<void> {
     return await this.authService.verifyEmail(token, res);
   }
 
@@ -91,6 +93,9 @@ export class AuthController {
     return user;
   }
 
+  //LOGOUT
+
+  @getProtectedSwagger()
   @Get('protected')
   getAuthProtected(@Req() req: Request) {
     return JSON.stringify(req.oidc.user);

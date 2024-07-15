@@ -13,63 +13,89 @@ import {
   runWithTryCatchNotFoundE,
 } from '../errors/errors';
 import { Role } from './roles/roles.enum';
-import { UserToSellerService } from './services/userToSeller.service';
+import { UserToSellerService } from './changeRole';
+import { Seller } from '../sellers/sellers.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository
-    , private readonly userToSellerService: UserToSellerService
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly userToSellerService: UserToSellerService,
   ) {}
-  
+
   async getAllUsers() {
     return runWithTryCatchNotFoundE(async () => {
       return await this.userRepository.getAllUsers();
     });
   }
-  async getUserByEmailAndDni() {
+
+  async getUserByEmailAndDni(): Promise<{
+    userInfo: User[];
+    sellerInfo: Seller[];
+  }> {
     return await this.userRepository.getUserByEmailAndDni();
   }
-  
+
+  async updatePassword(id: string, data: UpdatePasswordDto): Promise<string> {
+    return await this.userRepository.updatePassword(id, data);
+  }
+
   async registerUserFair(
     fairId: string,
     userId: string,
     selectedHour: RegisterUserFairDto,
-  ) {
-    
+  ): Promise<string> {
     return await this.userRepository.registerUserFair(
-        fairId,
-        userId,
-        selectedHour,
-      );
-      ;
-    }
-    
-    async findByEmail(email: string) {
-      return runWithTryCatchNotFoundE(async () => {
-        return await this.userRepository.findByEmail(email);
-      });
-    }
-    
-    async getUserById(id: string) {
-      return runWithTryCatchNotFoundE(async () => {
-        return await this.userRepository.getUserById(id);
-      });
-    }
-    
-    async userToSeller(id: string, role: Role) {
-      return runWithTryCatchBadRequestE(async () => {
-        await this.userToSellerService.userToSeller(id, role);
-      });
-    }
-    
-    async updateUser(id: string, user: Partial<RegisterUserDto>) {
-      runWithTryCatchNotFoundE(async () => {
-        await this.userRepository.updateUser(id, user);
-      });
-      return 'Se ha actualizado el usuario';
-    }
+      fairId,
+      userId,
+      selectedHour,
+    );
+  }
 
-  async resetPassword(user: User, newPassword: ResetPasswordDto) {
+  async getUserById(id: string): Promise<User> {
+    return runWithTryCatchNotFoundE(async () => {
+      return await this.userRepository.getUserById(id);
+    });
+  }
+
+  async changeRole(id: string, role: Role): Promise<void> {
+    return runWithTryCatchBadRequestE(async () => {
+      await this.userToSellerService.changeRole(id, role);
+    });
+  }
+
+  async updateUser(
+    id: string,
+    user: Partial<User>,
+  ): Promise<string> {
+    runWithTryCatchNotFoundE(async () => {
+      await this.userRepository.updateUser(id, user);
+    });
+    return 'Se ha actualizado el usuario';
+  }
+
+  async blockUser(id: string) {
+    return await this.userRepository.blockUser(id);
+  }
+
+  async unblockUser(id: string) {
+    return await this.userRepository.unblockUser(id);
+  }
+
+  async findByDni(dni: string): Promise<User> {
+    return await this.userRepository.findByDni(dni);
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return runWithTryCatchNotFoundE(async () => {
+      return await this.userRepository.findByEmail(email);
+    });
+  }
+
+  async resetPassword(
+    user: User,
+    newPassword: ResetPasswordDto,
+  ): Promise<string> {
     const { password, confirmPassword } = newPassword;
     if (password !== confirmPassword)
       throw new BadRequestException('Las contraseñas no coinciden');
@@ -90,7 +116,7 @@ export class UsersService {
     });
   }
 
-  async saveUser(user: User) {
+  async saveUser(user: User): Promise<User> {
     return runWithTryCatchBadRequestE(async () => {
       return await this.userRepository.saveUser(user);
     });
@@ -107,18 +133,5 @@ export class UsersService {
     return runWithTryCatchBadRequestE(async () => {
       return await this.userRepository.registerUser(newUser);
     });
-  }
-
-  async updateStatusUser(id: string) {
-    runWithTryCatchNotFoundE(async () => {
-      await this.userRepository.updateStatusUser(id);
-    });
-    return 'Usuario dado de baja';
-  }
-  async updatePassword(id: string, data: UpdatePasswordDto) {
-    return await this.userRepository.updatePassword(id, data);
-  }
-  async findByDni(dni: string) {
-    return await this.userRepository.findByDni(dni);
   }
 }

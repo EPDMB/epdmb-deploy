@@ -11,8 +11,9 @@ export class ProductsService {
         private readonly productsRepository: ProductsRepository
     ) {}
 
-    async createProducts(products: ProductsDto[], sellerId: string, fairId: string): Promise<Product[]> {
-        return await this.productsRepository.createProducts(products, sellerId, fairId);
+    async createProducts(products: ProductsDto[], sellerId: string, fairId: string, category: string) {
+        const pRequestId = await this.productsRepository.createProducts(products, sellerId, fairId, category);
+        return {pRequestId}
     }
 
     async getProducts(): Promise<Product[]> {
@@ -27,5 +28,9 @@ export class ProductsService {
 
     async updateStatus(id: string, updateProduct: UpdateProductDTO){
         return await this.productsRepository.updateStatus(id, updateProduct);
+    }
+
+    async getProductById(id: string): Promise<Product> {
+        return await this.productsRepository.getProductById(id);
     }
 }

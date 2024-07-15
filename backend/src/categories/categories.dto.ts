@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {  IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class CategoryDto {
     @ApiProperty({
@@ -8,5 +8,6 @@ export class CategoryDto {
         example: "0-12 mujer"
     })
     @IsString()
+    @IsNotEmpty()
     name: string
 }

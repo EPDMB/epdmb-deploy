@@ -20,6 +20,7 @@ import { config as dotenvConfig } from 'dotenv';
 import { UsersService } from '../users/users.service';
 import { Response } from 'express';
 import { runWithTryCatchBadRequestE } from '../errors/errors';
+import { UserStatusGeneral } from '../users/users.enum';
 
 dotenvConfig({ path: '.env' });
 
@@ -37,9 +38,6 @@ export class AuthService {
     if (userFound) throw new NotFoundException('El mail del usuario ya existe');
     const userDni = await this.userService.findByDni(user.dni);
     if (userDni) throw new NotFoundException('El dni del usuario ya existe');
-    // const userPhone = await this.userService.findByPhone(user.phone);
-    // if (userPhone)
-    //   throw new NotFoundException('El teléfono del usuario ya existe');
     const newUser = await this.userService.registerUser(user);
 
     const token = this.jwtService.sign(
@@ -106,10 +104,9 @@ export class AuthService {
     if (!passwordValid)
       throw new UnauthorizedException('Credenciales Invalidas');
 
-    if (user.status === false)
-      throw new UnauthorizedException(
-        'Verifica tu cuenta para poder iniciar sesión',
-      );
+    if (user.status === false) throw new UnauthorizedException('Verifica tu cuenta para poder iniciar sesión');
+
+    if (user.statusGeneral === UserStatusGeneral.BLOCKED) throw new UnauthorizedException('Usuario bloqueado');
 
     const payload = { id: user.id, email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
@@ -128,8 +125,6 @@ export class AuthService {
       newUser.name = payload.firstName || '';
       newUser.lastname = payload.lastName || '';
       newUser.dni = '';
-      // newUser.phone = '';
-      // newUser.address = '';
       newUser.password = '';
       newUser.role = role === 'seller' ? Role.SELLER : Role.USER;
       newUser.registration_date = new Date();
@@ -160,8 +155,8 @@ export class AuthService {
     await this.sendEmailResetPassword(user.email, token);
   }
 
-  async sendEmailResetPassword(email: string, token: string) {
-    const url = `${process.env.URL}/auth/reset-password/${token}`;
+  async sendEmailResetPassword(email: string, token: string):Promise<void> {
+    const url = `${process.env.FRONTEND_URL}/auth/reset-password/${token}`;
     try {
       await this.mailService.sendMail({
         to: email,
@@ -182,6 +177,8 @@ export class AuthService {
     res: Response,
   ): Promise<void> {
     try {
+      console.log(token);
+      console.log(resetPasswordDto);
       const decoded = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });
@@ -192,8 +189,8 @@ export class AuthService {
       }
       await this.userService.resetPassword(user, resetPasswordDto);
 
-      const redirectUrl = `${process.env.FRONTEND_URL}/login`;
-      return res.redirect(redirectUrl);
+      // const redirectUrl = `${process.env.URL_FRONT}/login`;
+      // return res.redirect(redirectUrl);
     } catch (error) {
       throw new InternalServerErrorException('Token inválido o expirado');
     }

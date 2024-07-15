@@ -2,34 +2,35 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
 
 export class ProductsDto {
-  @ApiProperty({
-    description: 'El nombre del producto',
-    example: 'Producto de ejemplo',
-  })
+  @ApiProperty({ example: 'Producto 1', description: 'Marca del producto' })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  brand: string;
 
-  @ApiProperty({
-    description: 'La descripción del producto',
-    example: 'Descripción del producto de ejemplo',
-  })
+  @ApiProperty({ example: 'Descripción del producto', description: 'Descripción del producto' })
   @IsString()
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty({
-    description: 'El precio del producto',
-    example: 19.99,
-  })
+  @ApiProperty({ example: 10, description: 'Precio del producto' })
   @IsNumber()
   price: number;
 
-  @ApiProperty({
-    description: 'La URL de la imagen del producto',
-    example: 'https://example.com/product-image.jpg',
-  })
+  @ApiProperty({ example: 'M', description: 'Tamaño del producto' })
+  @IsString()
+  @IsNotEmpty()
+  size: string;
+
+  @IsNotEmpty()
+  liquidation: boolean;
+
+  @ApiProperty({ example: 'http://example.com/photo.jpg', description: 'URL de la foto del producto' })
   @IsString()
   @IsNotEmpty()
   photoUrl: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({example: '12 mujer', description: 'Categoría del producto'})
+  category: string;
 }

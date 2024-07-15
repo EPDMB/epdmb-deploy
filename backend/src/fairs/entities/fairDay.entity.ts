@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-
 import { BuyerCapacity } from './buyersCapacity.entity';
 import { Fair } from './fairs.entity';
 import { Exclude } from 'class-transformer';

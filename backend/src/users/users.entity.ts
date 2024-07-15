@@ -12,6 +12,7 @@ import { v4 as uuid } from 'uuid';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { UserStatusGeneral } from './users.enum';
 
 @Entity({ name: 'users' })
 export class User {
@@ -31,12 +32,6 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  // @Column()
-  // phone: string;
-
-  // @Column()
-  // address: string;
-
   @Column()
   @Exclude()
   password: string;
@@ -50,6 +45,9 @@ export class User {
   @Column({ default: false })
   status: boolean;
 
+  @Column({ default: UserStatusGeneral.INACTIVE })
+  statusGeneral: UserStatusGeneral;
+
   @Column({
     default:
       'https://res.cloudinary.com/dpso5fsug/image/upload/v1719432779/el_placard_de_mi_bebot/scuh9cj2v97xflgtahm8.png',
@@ -61,6 +59,5 @@ export class User {
   seller: Seller;
 
   @OneToMany(() => UserFairRegistration, (registration) => registration.user)
-  @JoinColumn()
-  registrations: UserFairRegistration[];
+  registrations: UserFairRegistration[]; 
 }

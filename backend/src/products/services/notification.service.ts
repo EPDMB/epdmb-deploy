@@ -10,13 +10,13 @@ export class NotificationService {
     constructor(private readonly mailerService: MailerService){}
 
     async sendNotificationToAdmin(createProductRequestDto: CreateProductRequestDto) {
-        const {seller, products} = createProductRequestDto
+        const {sellerId, products} = createProductRequestDto
         await this.mailerService.sendMail({
             to: process.env.EMAIL_ADMIN, subject: 'Productos en espera de autorización', 
             html: `<html>
       <body>
-        <h1>Revisión de Productos del Vendedor: ${seller.user.name}</h1>
-        <p>Email del Vendedor: ${seller.user.email}</p>
+        <h1>Revisión de Productos del Vendedor: </h1>
+        
         <p>Por favor, revise los siguientes productos:</p>
         <ul>
           ${products}

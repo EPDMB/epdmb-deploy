@@ -1,8 +1,20 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNotEmpty } from 'class-validator';
 
+export class UpdateProductRequestDto {
+    @ApiProperty({
+        example: '0a5a10c3-4458-4070-9d62-198621a4a777',
+        description: 'ID del producto'
+    })
+    @IsString()
+    @IsNotEmpty()
+    productId: string;
 
-export class UpdateProductRequestDto{
-
-    status: 'PENDING' | 'APPROVED' | 'REJECTED'
-
-    
+    @ApiProperty({
+        example: 'VERDE',
+        description: 'Estado del producto'
+    })
+    @IsString()
+    @IsNotEmpty()
+    status: string;
 }

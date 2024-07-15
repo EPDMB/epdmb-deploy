@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SellerRepository } from './sellers.repository';
 import { Seller } from './sellers.entity';
 import { Product } from '../products/entities/products.entity';
-import { SKU } from '../products/entities/SKU.entity';
 import { Fair } from '../fairs/entities/fairs.entity';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 import { FairsRepository } from '../fairs/fairs.repository';
@@ -18,7 +17,7 @@ import { Category } from 'src/categories/categories.entity';
 import { CategoriesService } from 'src/categories/categories.service';
 import { FairDay } from 'src/fairs/entities/fairDay.entity';
 import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
-import { UserToSellerService } from 'src/users/services/userToSeller.service';
+import { UserToSellerService } from 'src/users/changeRole';
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { UserToSellerService } from 'src/users/services/userToSeller.service';
       User,
       Seller,
       Product,
-      SKU,
       Fair,
       UserFairRegistration,
       SellerFairRegistration,

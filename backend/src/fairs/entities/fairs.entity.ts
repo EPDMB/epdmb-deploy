@@ -5,7 +5,6 @@ import { UserFairRegistration } from './userFairRegistration.entity';
 import { SellerFairRegistration } from './sellerFairRegistration.entity';
 import { PaymentTransaction } from '../../payment_transaction/paymentTransaction.entity';
 import { ProductRequest } from '../../products/entities/productRequest.entity';
-import { Category } from '../../categories/categories.entity';
 import { FairCategory } from './fairCategory.entity';
 
 @Entity({ name: 'fair' })
@@ -21,6 +20,9 @@ export class Fair {
 
   @Column()
   entryPriceSeller: number;
+
+  @Column({default : true})
+  isActive: boolean;
 
   @Column()
   entryPriceBuyer: number;

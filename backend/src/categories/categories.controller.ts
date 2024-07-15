@@ -6,7 +6,9 @@ import { Role } from "../users/roles/roles.enum";
 import { AuthGuard } from "../auth/auth.guard";
 import { RoleGuard } from "../users/roles/roles.guard";
 import { createCategorySwagger, getCategoriesSwagger, getCategoryByIdSwagger } from "./categories.swagger";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService){}

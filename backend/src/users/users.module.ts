@@ -18,23 +18,12 @@ import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 import { FairDay } from 'src/fairs/entities/fairDay.entity';
 import { Category } from 'src/categories/categories.entity';
 import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
-import { UserToSellerService } from './services/userToSeller.service';
+import { UserToSellerService } from './changeRole';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      User,
-      Seller,
-      UserFairRegistration,
-      SellerFairRegistration,
-      Fair,
-      Product,
-      BuyerCapacity,
-      FairDay,
-      Category,
-      FairsRepository,
-      FairCategory
-    ]),
+    TypeOrmModule.forFeature([ User, Seller, UserFairRegistration, SellerFairRegistration, Fair, Product,
+      BuyerCapacity, FairDay, Category, FairsRepository, FairCategory ]),
   ],
   controllers: [UsersController],
   providers: [UsersService, UserRepository, SellerRepository, AuthService, FairsService, FairsRepository, UserToSellerService],

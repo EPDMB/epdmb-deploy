@@ -37,7 +37,9 @@ import { BuyerCapacity } from './fairs/entities/buyersCapacity.entity';
 import { FairDay } from './fairs/entities/fairDay.entity';
 import { Category } from './categories/categories.entity';
 import { FairCategory } from './fairs/entities/fairCategory.entity';
-import { UserToSellerService } from './users/services/userToSeller.service';
+import { ChatGateway } from './chat/chat.gateway';
+import { UserToSellerService } from './users/changeRole';
+
 
 @Module({
   imports: [
@@ -64,7 +66,7 @@ import { UserToSellerService } from './users/services/userToSeller.service';
       BuyerCapacity,
       FairDay,
       Category,
-      FairCategory
+      FairCategory,
     ]),
     UsersModule,
     SellerModule,
@@ -93,7 +95,8 @@ import { UserToSellerService } from './users/services/userToSeller.service';
     GoogleStrategy,
     FairsService,
     SellerService,
-    UserToSellerService
+    UserToSellerService,
+    ChatGateway,
   ],
 })
 export class AppModule implements NestModule {

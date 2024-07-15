@@ -1,19 +1,23 @@
 export enum ProductStatus {
-    ROJO = 'ROJO',
-    AMARILLO = 'AMARILLO',
-    AZUL = 'AZUL',
-    CELESTE = 'CELESTE',
-    VERDE = 'VERDE',
-    GRIS = 'GRIS',
-    BLANCO = 'BLANCO',
+    ACCEPTED = 'accepted',
+    NOTACCEPTED = 'notAccepted',
+    NOTAVAILABLE = 'notAvailable',
+    CATEGORYNOTAPPLY = 'categoryNotApply',
+    SECONDMARK = 'secondMark',
+    PENDINGVERICATION = 'pendingVerification',
+    SOLD = 'sold',
+    SOLDONCLEARANCE = 'soldOnClearance',
+    UNSOLD = 'unsold'
   }
   
 export const ProductStatusDescription = {
-    ROJO: 'Producto no aceptado a la feria',
-    AMARILLO: 'Producto aceptado pero no disponible',
-    AZUL: 'Producto que no corresponde a la categoría',
-    CELESTE: 'Producto de segunda marca',
-    VERDE: 'Producto vendido',
-    GRIS: 'Producto Aceptado',
-    BLANCO: 'Producto pendiente de verificacion'
+    [ProductStatus.ACCEPTED]: 'Aceptado',
+    [ProductStatus.NOTACCEPTED]: 'No aceptado',
+    [ProductStatus.NOTAVAILABLE]: 'No disponible',
+    [ProductStatus.CATEGORYNOTAPPLY]: 'No aplica por categoria',
+    [ProductStatus.SECONDMARK]: 'Segunda marca',
+    [ProductStatus.PENDINGVERICATION]: 'Pendiente de verificación',
+    [ProductStatus.SOLD]: 'Vendido',
+    [ProductStatus.SOLDONCLEARANCE]: 'Vendido en descuento',
+    [ProductStatus.UNSOLD]: 'No vendido'
   };

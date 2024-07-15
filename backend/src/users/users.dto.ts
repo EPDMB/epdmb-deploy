@@ -2,19 +2,17 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEmpty,
-  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
-  Max,
   MaxLength,
-  Min,
   MinLength,
   Validate,
 } from 'class-validator';
 import { Role } from '../users/roles/roles.enum';
 import { IsDniValidConstraint } from 'src/auth/auth.validator';
+import { Type } from 'class-transformer';
 
 export class RegisterUserDto {
   @IsNotEmpty()
@@ -153,16 +151,18 @@ export class UpdatePasswordDto {
 
 export class RegisterUserFairDto {
   @ApiProperty({
-    example: 10,
+    example: '10:00',
     description: 'Hora seleccionada para la inscripción (formato 24 horas)',
   })
   @IsString()
   selectedHour: string;
 
   @ApiProperty({
-    example: 'Monday',
-    description: 'Dia seleccionado para la inscripción',
+    example: '2024-07-14',
+    description: 'Fecha seleccionada para la inscripción (formato ISO)',
   })
   @IsNotEmpty()
-  selectedDay: Date;
+  @Type(() => Date)
+  selectedDay: Date; 
 }
+

@@ -23,7 +23,7 @@ export class UserFairRegistration {
   entryFee?: number;
 
   @Column()
-  registratonDay: Date;
+  registrationDay: Date;
 
   @Column()
   registrationHour: string;

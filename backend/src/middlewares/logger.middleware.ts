@@ -7,6 +7,5 @@ export class LoggerMiddleware implements NestMiddleware {
     const now = new Date().toISOString();
     console.log(`[${now} TIEMPO] ${req.method} ${req.originalUrl}`);
     next();
-
   }
 }

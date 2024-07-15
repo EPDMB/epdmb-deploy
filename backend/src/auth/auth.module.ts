@@ -22,7 +22,7 @@ import { BuyerCapacity } from 'src/fairs/entities/buyersCapacity.entity';
 import { FairDay } from 'src/fairs/entities/fairDay.entity';
 import { Category } from 'src/categories/categories.entity';
 import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
-import { UserToSellerService } from 'src/users/services/userToSeller.service';
+import { UserToSellerService } from 'src/users/changeRole';
 
 dotenvConfig({ path: '.env' });
 
@@ -38,7 +38,7 @@ dotenvConfig({ path: '.env' });
         },
       },
       defaults: {
-        from: '"El Plac" <' + process.env.EMAIL + '>',
+        from: '"FERIAS EL PLAC" <' + process.env.EMAIL + '>',
       },
       template: {
         dir: join(__dirname, '..', '../templates'),
@@ -61,6 +61,6 @@ dotenvConfig({ path: '.env' });
     IsDniValidConstraint,
     UserToSellerService
   ],
-  exports: [AuthService],
+  exports: [AuthService, MailerModule],
 })
 export class AuthModule {}

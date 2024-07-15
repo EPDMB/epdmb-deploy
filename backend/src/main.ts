@@ -10,11 +10,11 @@ dotenvConfig({ path: '.env' });
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)))
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const swaggerConfig = new DocumentBuilder()
     .setTitle('El placard de mi bebot')
     .setDescription(
-      'Esta documentación describe el uso de la API del placard de mi bebot, el servidor está creado con NestJS, y como base de datos se utiliza PostgreSQL. \n- Los invitados van a poder registrarse como vendedores o como usarios. \n- Los usuarios van a poder anotarse en las ferias, y pagar la entrada dependiendo la feria. \n- Los vendedores van a poder anotarse para vender su ropa en las ferias, van a subir los productos y van a recibir el 70% de las ventas finalizada la feria.',
+      'Esta documentación describe el uso de la API del placard de mi bebot: \n- Servidor con NestJS y TypeScript \n- Base de datos PostgreSQL con Type ORM. \n- Sistema de registro y login manual y con Google. \n- Manejo de token con JWT. \n- Encriptación de contraseñas con Bcrypt. \n- NodeMailer para notificaciones por mail. \n- Utilizacion de Mercado Pago para pagos..',
     )
     .setVersion('1.0')
     .addBearerAuth()

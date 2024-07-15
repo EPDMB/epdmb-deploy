@@ -14,7 +14,7 @@ export class FairsService {
     return await this.fairsRepository.getAllFairs();
   }
 
-  async updateFair(fair: FairDto, fairId: string) {
+  async updateFair(fair: Partial<FairDto>, fairId: string) {
     return await this.fairsRepository.updateFair(fair, fairId);
   }
 
