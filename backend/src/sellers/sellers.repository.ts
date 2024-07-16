@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ObjectId, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Seller } from '../sellers/sellers.entity';
 import { RegisterSellerDto } from './sellers.dto.js';
 import { Role } from '../users/roles/roles.enum';
@@ -15,6 +15,8 @@ import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration
 import { SellerStatus } from './sellers.enum';
 import { FairCategory } from 'src/fairs/entities/fairCategory.entity';
 import { Fair } from 'src/fairs/entities/fairs.entity';
+import { MailerService } from '@nestjs-modules/mailer';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class SellerRepository {
@@ -29,6 +31,8 @@ export class SellerRepository {
     @InjectRepository(FairCategory)
     private readonly fairCategoryRepository: Repository<FairCategory>,
     @InjectRepository(Fair) private readonly fairRepositoryDB: Repository<Fair>,
+    private readonly mailService: MailerService,
+    private readonly jwtService: JwtService,
   ) {}
   async sellerRegister(
     sellerData: RegisterSellerDto,
@@ -80,67 +84,106 @@ export class SellerRepository {
     return sellerX;
   }
 
-  async registerFair(sellerId: string, fairId: string, fairCategoryId: string): Promise<string> {
+  async registerFair(
+    sellerId: string,
+    fairId: string,
+    fairCategoryId: string,
+    liquidation: string,
+  ): Promise<string> {
     try {
-        console.log(`registerFair called with sellerId: ${sellerId}, fairId: ${fairId}, fairCategoryId: ${fairCategoryId}`);
+      console.log(
+        `registerFair called with sellerId: ${sellerId}, fairId: ${fairId}, fairCategoryId: ${fairCategoryId}, liquidation: ${liquidation}`,
+      );
 
-        const fair = await this.fairRepositoryDB.findOneBy({ id: fairId });
-        if (!fair) {
-            throw new NotFoundException('Feria no encontrada');
-        }
-        if(fair.isActive === false) {
-            throw new BadRequestException('Feria cerrada');
-        }
+      const fair = await this.fairRepositoryDB.findOneBy({ id: fairId });
+      if (!fair) {
+        throw new NotFoundException('Feria no encontrada');
+      }
+      if (fair.isActive === false) {
+        throw new BadRequestException('Feria cerrada');
+      }
 
-        const seller = await this.sellerRepository.findOneBy({id: sellerId});
-        if (!seller) {
-            throw new NotFoundException('Vendedor no encontrado');
-        }
+      const seller = await this.sellerRepository.findOne({
+        where: { id: sellerId },
+        relations: ['user'],
+      });
+      if (!seller) {
+        throw new NotFoundException('Vendedor no encontrado');
+      }
 
-        const fairCategory = await this.fairCategoryRepository.findOne({
-            where: { id: fairCategoryId },
-            relations: ['category'], 
-        });
-        if (!fairCategory) {
-            throw new NotFoundException('Categoría no encontrada');
-        }
-        console.log(`Categoría de feria encontrada:`, fairCategory);
+      const fairCategory = await this.fairCategoryRepository.findOne({
+        where: { id: fairCategoryId },
+        relations: ['category'],
+      });
+      if (!fairCategory) {
+        throw new NotFoundException('Categoría no encontrada');
+      }
 
-        if (!fairCategory.category || !fairCategory.category.name) {
-            throw new BadRequestException('La categoría no tiene nombre');
-        }
+      if (!fairCategory.category || !fairCategory.category.name) {
+        throw new BadRequestException('La categoría no tiene nombre');
+      }
 
-        if (fairCategory.maxSellers <= 0) {
-            throw new BadRequestException('Categoría llena');
-        }
+      if (fairCategory.maxSellers <= 0) {
+        throw new BadRequestException('Categoría llena');
+      }
+      let newLiquidation = false;
+      if (liquidation == 'si') {
+        newLiquidation = true;
+      }
 
-        // Asignar fairCategory a sellerRegistration.categoryFair
-        const sellerRegistration = new SellerFairRegistration();
-        sellerRegistration.registrationDate = new Date();
-        sellerRegistration.entryFee = fair.entryPriceSeller;
-        sellerRegistration.seller = seller;
-        sellerRegistration.fair = fair;
-        sellerRegistration.categoryFair = fairCategory; // Asignación de fairCategory a categoryFair
+      // Asignar fairCategory a sellerRegistration.categoryFair
+      const sellerRegistration = new SellerFairRegistration();
+      console.log(liquidation);
+      sellerRegistration.registrationDate = new Date();
+      sellerRegistration.entryFee = fair.entryPriceSeller;
+      sellerRegistration.liquidation = newLiquidation;
+      sellerRegistration.seller = seller;
+      sellerRegistration.fair = fair;
+      sellerRegistration.categoryFair = fairCategory; // Asignación de fairCategory a categoryFair
 
-        await this.sellerFairRegistrationRepository.save(sellerRegistration);
+      await this.sellerFairRegistrationRepository.save(sellerRegistration);
 
-        console.log(`Vendedor registrado correctamente en la feria:`, sellerRegistration);
-        seller.status = SellerStatus.ACTIVE;
-        await this.sellerRepository.save(seller);
+      console.log(
+        `Vendedor registrado correctamente en la feria:`,
+        sellerRegistration,
+      );
+      seller.status = SellerStatus.ACTIVE;
+      await this.sellerRepository.save(seller);
 
-        return 'Vendedor registrado correctamente';
+      const token = this.jwtService.sign(
+        {
+          email: seller.user.email,
+        },
+        { secret: process.env.JWT_SECRET },
+      );
+      await this.sendEmailVerification(seller.user.email, token);
+
+      return 'Vendedor registrado correctamente';
     } catch (error) {
-        if (
-            error instanceof NotFoundException ||
-            error instanceof BadRequestException
-        ) {
-            throw error;
-        }
-        console.log(error);
-        throw new Error('Error al registrar vendedor en la feria');
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      console.log(error);
+      throw new Error('Error al registrar vendedor en la feria');
     }
-}
+  }
 
+  async sendEmailVerification(email: string, token: string) {
+    console.log(email);
+    const user = await this.usersRepository.findOneBy({ email });
+    const name = user.name;
+    await this.mailService.sendMail({
+      to: email,
+      subject: 'Registro exitoso en feria',
+      template: 'mailFairVerificationSeller',
+      context: {
+        name,
+      },
+    });
+  }
 
   async getSellerById(sellerId: string) {
     const seller = await this.sellerRepository.findOne({
@@ -150,16 +193,15 @@ export class SellerRepository {
         registrations: {
           fair: true,
           categoryFair: {
-            category: true,  
+            category: true,
           },
         },
       },
     });
-  
+
     if (!seller) throw new NotFoundException('Vendedor no encontrado');
     return seller;
   }
-  
 
   async findByPhone(phone: string) {
     return await this.sellerRepository.findOneBy({ phone: phone });
@@ -190,13 +232,12 @@ export class SellerRepository {
           fair: true,
           categoryFair: {
             category: true,
-          }
+          },
         },
       },
     });
     return sellers;
   }
-  
 
   async update(id: string, seller: any) {
     const sellerToUpdate = await this.sellerRepository.findOneBy({ id });

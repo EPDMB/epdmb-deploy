@@ -115,7 +115,6 @@ export class FairsRepository {
       ],
     });
   }
-  
 
   async updateFair(fair: Partial<FairDto>, fairId: string) {
     const fairToUpdate = await this.fairRepository.findOneBy({ id: fairId });
@@ -147,6 +146,7 @@ export class FairsRepository {
         'fairCategories.products',
         'fairCategories.category',
         'sellerRegistrations.seller.user',
+        'productRequests'
       ],
     });
     if (!fair) throw new NotFoundException('Feria no encontrada');

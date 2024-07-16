@@ -24,11 +24,6 @@ export class ProductsDto {
   @IsNotEmpty()
   liquidation: boolean;
 
-  @ApiProperty({ example: 'http://example.com/photo.jpg', description: 'URL de la foto del producto' })
-  @IsString()
-  @IsNotEmpty()
-  photoUrl: string;
-
   @IsString()
   @IsNotEmpty()
   @ApiProperty({example: '12 mujer', description: 'Categoría del producto'})

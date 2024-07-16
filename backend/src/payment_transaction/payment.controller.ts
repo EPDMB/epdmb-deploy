@@ -50,6 +50,7 @@ export class PaymentsController {
   }
   @Post('success/seller')
   async paymentSuccessSeller(
+    @Query('liquidation') liquidation: string,
     @Query('id') id: string,
     @Query('data.id') dataId: string,
     @Query('categoryId') categoryId: string,
@@ -63,6 +64,7 @@ export class PaymentsController {
       fairId,
       categoryId,
       userId,
+      liquidation,
     };
     await this.mercadoPagoService.handlePaymentSuccessSeller(data);
     const message = 'Pago exitoso';

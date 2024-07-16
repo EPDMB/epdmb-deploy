@@ -149,7 +149,7 @@ export class UserRepository {
   }
 
   async sendEmailInscriptionFair(email: string, token: string, fair: Fair) {
-    const url = `${process.env.FRONTEND_URL}/fair/${token}`;
+    const url = `${process.env.URL_FRONT}/fair/${token}`;
     const user = await this.findByEmail(email);
     const name = user.name;
     const DNI = user.dni;
@@ -181,7 +181,7 @@ export class UserRepository {
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email: email });
+    return await this.userRepository.findOne({where: { email: email}});
   }
 
   async updateUser(id: string, user: Partial<RegisterUserDto>): Promise<void> {

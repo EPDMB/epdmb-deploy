@@ -19,7 +19,6 @@ import {
 } from './users.dto';
 import { ApiTags } from '@nestjs/swagger';
 import {
-  adminToUserSwagger,
   blockUserSwagger,
   getAllUserSwagger,
   getUserByEmailAndDniSwagger,

@@ -12,7 +12,7 @@ import { User } from '../users/users.entity';
 import { UsersService } from '../users/users.service';
 import { Seller } from '../sellers/sellers.entity';
 import { SellerService } from '../sellers/seller.service';
-import { PaymentTransaction } from './paymentTransaction.entity.js';
+import { PaymentTransaction } from './paymentTransaction.entity';
 import { SellerFairRegistration } from '../fairs/entities/sellerFairRegistration.entity';
 import { UserFairRegistration } from '../fairs/entities/userFairRegistration.entity';
 
@@ -38,7 +38,7 @@ export class PaymentsService {
 
   // Seller
   async createPreferenceSeller(createPaymentDto: any, baseUrl: string) {
-    const { userId, fairId, categoryId } = createPaymentDto;
+    const { userId, fairId, categoryId, liquidation } = createPaymentDto;
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -55,7 +55,7 @@ export class PaymentsService {
           unit_price: fair.entryPriceSeller,
         },
       ],
-      notification_url: `https://da14-2800-810-475-11d4-441b-9c2-4447-2b03.ngrok-free.app/payments/success/seller/?fairId=${fairId}&userId=${userId}&categoryId=${categoryId}`,
+      notification_url: `${process.env.BACK_URL_DEPLOY}/payments/success/seller/?fairId=${fairId}&userId=${userId}&categoryId=${categoryId}&liquidation=${liquidation}`,
       back_urls: {
         success: `${process.env.FRONTEND_URL}/dashboard/fairs`,
       },
@@ -95,7 +95,7 @@ export class PaymentsService {
           unit_price: fair.entryPriceBuyer,
         },
       ],
-      notification_url: `https://da14-2800-810-475-11d4-441b-9c2-4447-2b03.ngrok-free.app/payments/success/buyer/?selectedHour=${registrationHour}&selectedDay=${registrationDay}&fairId=${fairId}&userId=${user.id}`,
+      notification_url: `${process.env.BACK_URL_DEPLOY}/payments/success/buyer/?selectedHour=${registrationHour}&selectedDay=${registrationDay}&fairId=${fairId}&userId=${user.id}`,
 
       back_urls: {
         success: `${process.env.FRONTEND_URL}/dashboard/profile`,
@@ -214,6 +214,7 @@ export class PaymentsService {
           seller.id,
           data.fairId,
           data.categoryId,
+          data.liquidation,
         );
         return { message: 'Payment successful' };
       }

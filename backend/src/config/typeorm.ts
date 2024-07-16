@@ -24,7 +24,7 @@ const config: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   synchronize: true,
-  dropSchema: true,
+  // dropSchema: true,
   logging: false,
   entities: [
     Fair,
@@ -40,9 +40,7 @@ const config: DataSourceOptions = {
     FairDay,
     FairCategory,
   ],
-  ssl: {
-    rejectUnauthorized: false,
-  }, // deshabilitar SSL
+  ssl: false, // deshabilitar SSL
 
   // entities: ['dist/**/*.entity{.ts,.js}'],
   //autoLoadEntities: true,

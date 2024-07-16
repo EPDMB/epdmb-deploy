@@ -39,11 +39,13 @@ export class SellerController {
     @Param('sellerId') sellerId: string,
     @Param('fairId') fairId: string,
     @Param('fairCategoryId') fairCategoryId: string,
+    @Body() liquidation: any,
   ) {
     return await this.sellerService.registerFair(
       sellerId,
       fairId,
       fairCategoryId,
+      liquidation.liquidation,
     );
   }
 

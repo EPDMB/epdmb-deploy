@@ -25,9 +25,6 @@ export class Product {
   @Column()
   size: string;
 
-  @Column()
-  photoUrl: string;
-
   @Column({default: false})
   liquidation: boolean;
 
@@ -51,5 +48,4 @@ export class Product {
   @ManyToOne(() => FairCategory, fairCategory => fairCategory.products )
   @JoinColumn()
   fairCategory: FairCategory
-
 }

@@ -111,7 +111,7 @@ export class AuthService {
     const payload = { id: user.id, email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
 
-    return { message: 'usuario logueado exitosamente', token };
+    return { message: 'usuario logueado exitosamente', token, role: user.role};
   }
 
   async googleLogin(payload: any, role: string) {
@@ -177,8 +177,6 @@ export class AuthService {
     res: Response,
   ): Promise<void> {
     try {
-      console.log(token);
-      console.log(resetPasswordDto);
       const decoded = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
       });

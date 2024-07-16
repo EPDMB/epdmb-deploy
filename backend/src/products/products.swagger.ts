@@ -1,6 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { ProductsDto } from './dtos/products.dto';
+import { UpdateProductDTO } from './dtos/UpdateStatus.dto';
 
 export function createProductsSwagger() {
   return applyDecorators(
@@ -52,7 +53,7 @@ export function updateStatusSwagger() {
     }),
     ApiBody({
       description: 'Datos necesarios para actualizar el estado del proyecto',
-      type: ProductsDto,
+      type: UpdateProductDTO,
     }),
     ApiResponse({
       status: 200,

@@ -5,11 +5,17 @@ import { SellerRepository } from './sellers.repository';
 export class SellerService {
   constructor(private readonly sellerRepository: SellerRepository) {}
 
-  async registerFair(sellerId: string, fairId: string, fairCategoryId: string) {
+  async registerFair(
+    sellerId: string,
+    fairId: string,
+    fairCategoryId: string,
+    liquidation: string,
+  ) {
     return await this.sellerRepository.registerFair(
       sellerId,
       fairId,
       fairCategoryId,
+      liquidation,
     );
   }
 

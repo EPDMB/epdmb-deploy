@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
+import { ProductStatus } from '../enum/productStatus.enum';
 
 export class UpdateProductRequestDto {
     @ApiProperty({
@@ -16,5 +17,5 @@ export class UpdateProductRequestDto {
     })
     @IsString()
     @IsNotEmpty()
-    status: string;
+    status: ProductStatus;
 }

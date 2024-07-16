@@ -69,7 +69,6 @@ export class ProductsRepository {
         productEntity.description = product.description;
         productEntity.price = product.price;
         productEntity.size = product.size
-        productEntity.photoUrl = product.photoUrl;
         productEntity.category = product.category;
         productEntity.liquidation = product.liquidation;
         // LOGICA DEL SKU
@@ -109,4 +108,9 @@ export class ProductsRepository {
   async getProductById(id: string): Promise<Product> {
     return await this.productRepository.findOneBy({ id });
   }
+
+  async getSellerProducts(sellerId: string) {
+    const sellerX = await this.sellerRepository.findOneBy({id:sellerId})
+    return await this.productRepository.find({where:{seller:sellerX}})
+}
 }

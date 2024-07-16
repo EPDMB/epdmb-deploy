@@ -21,6 +21,9 @@ export class SellerFairRegistration {
   @Column()
   entryFee?: number;
 
+  @Column({ default: false })
+  liquidation: boolean;
+
   @ManyToOne(() => Seller, (seller) => seller.registrations)
   @JoinColumn()
   seller: Seller;
@@ -29,7 +32,10 @@ export class SellerFairRegistration {
   @JoinColumn()
   fair: Fair;
 
-  @ManyToOne(() => FairCategory, (fairCategory) => fairCategory.sellerRegistrations)
+  @ManyToOne(
+    () => FairCategory,
+    (fairCategory) => fairCategory.sellerRegistrations,
+  )
   @JoinColumn()
   categoryFair: FairCategory;
 }
