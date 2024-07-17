@@ -19,9 +19,9 @@ export class ProductsController {
         private readonly productsService: ProductsService
     ) {}
 
-    // @createProductsSwagger()
-    // @Roles(Role.SELLER)
-    // @UseGuards(AuthGuard, RoleGuard)
+     @createProductsSwagger()
+     @Roles(Role.SELLER)
+     @UseGuards(AuthGuard, RoleGuard)
     @Post(':sellerId/:fairsId')
     async createProducts(
         @Body('createProducts')createProducts: {products:ProductsDto[], category: string}, 
@@ -32,8 +32,8 @@ export class ProductsController {
     }
 
     @getAllProductsSwagger()
-    // @Roles(Role.ADMIN)
-    // @UseGuards(AuthGuard, RoleGuard)
+    @Roles(Role.ADMIN)
+   @UseGuards(AuthGuard, RoleGuard)
     @Get()
     async getProducts(): Promise<Product[]> {
         return await this.productsService.getProducts();

@@ -42,7 +42,7 @@ export class PaymentsService {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
-    const fair = await this.fairRepository.findOne({ where: { id: fairId } });
+    const fair = await this.fairRepository.findOne({ where: { id: fairId, isActive: true } });
     if (!user || !fair) {
       throw new BadRequestException('Seller or Fair not found');
     }
@@ -62,10 +62,6 @@ export class PaymentsService {
       auto_return: 'approved',
     };
     try {
-      console.log('datos de entrada');
-      console.log(createPaymentDto.categoryId);
-      console.log(createPaymentDto.fairId);
-      console.log(createPaymentDto.userId);
       const response = await preference.create({ body: preferenceData });
       return { preferenceId: response.id };
     } catch (error) {
@@ -82,7 +78,7 @@ export class PaymentsService {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
-    const fair = await this.fairRepository.findOne({ where: { id: fairId } });
+    const fair = await this.fairRepository.findOne({ where: { id: fairId, isActive: true } });
     if (!user || !fair) {
       throw new BadRequestException('Seller or Fair not found');
     }
@@ -116,7 +112,7 @@ export class PaymentsService {
   async handlePaymentSuccessBuyer(data: any) {
     try {
       const fair = await this.fairRepository.findOne({
-        where: { id: data.fairId },
+        where: { id: data.fairId, isActive: true },
       });
       const user = await this.userRepository.findOne({
         where: { id: data.userId },
@@ -170,7 +166,7 @@ export class PaymentsService {
   async handlePaymentSuccessSeller(data: any) {
     try {
       const fair = await this.fairRepository.findOne({
-        where: { id: data.fairId },
+        where: { id: data.fairId, isActive: true },
       });
       const user = await this.userRepository.findOne({
         where: { id: data.userId },

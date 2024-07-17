@@ -40,10 +40,9 @@ const config: DataSourceOptions = {
     FairDay,
     FairCategory,
   ],
-  ssl: { rejectUnauthorized: false }, // deshabilitar SSL
-
-  // entities: ['dist/**/*.entity{.ts,.js}'],
-  //autoLoadEntities: true,
+  ssl: {
+    rejectUnauthorized: false,
+  },
   migrations: ['dist/src/migrations/*{.ts,.js}'],
 };
 

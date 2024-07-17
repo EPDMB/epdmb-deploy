@@ -30,7 +30,7 @@ export class SellerService {
   async getAllSellers() {
     return await this.sellerRepository.getAllSellers();
   }
-  async update(id: string, seller: any) {
-    return await this.sellerRepository.update(id, seller);
+  async updateSeller(id: string, seller: any) {
+    return await this.sellerRepository.updateSeller(id, seller);
   }
 }

@@ -96,7 +96,7 @@ export class AuthService {
     });
   }
 
-  async loginUser({ email, password }: LoginUserDto) {
+  async loginUser({ email, password, rememberMe }: LoginUserDto) {
     const user = await this.userService.findByEmail(email);
     if (!user) throw new UnauthorizedException('Credenciales Invalidas');
 
@@ -109,7 +109,8 @@ export class AuthService {
     if (user.statusGeneral === UserStatusGeneral.BLOCKED) throw new UnauthorizedException('Usuario bloqueado');
 
     const payload = { id: user.id, email: user.email, role: user.role };
-    const token = this.jwtService.sign(payload);
+    const expiresIn = rememberMe ? '30d' : '12h';
+    const token = this.jwtService.sign(payload, { expiresIn });
 
     return { message: 'usuario logueado exitosamente', token, role: user.role};
   }

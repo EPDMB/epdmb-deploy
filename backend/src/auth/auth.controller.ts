@@ -63,7 +63,7 @@ export class AuthController {
     res
       .status(HttpStatus.OK)
       .redirect(
-        `${process.env.FRONTEND_URL}/auth/success/?token=${jwtToken}`,
+        `${process.env.FRONTEND_URL}/auth/success/?token=${jwtToken}&role=${user.role}`,
       );
     return;
   }
@@ -82,7 +82,10 @@ export class AuthController {
 
   @getAuthSwagger()
   @Get('verify-email/:token')
-  async verifyEmail(@Param('token') token: string, @Res() res: Response): Promise<void> {
+  async verifyEmail(
+    @Param('token') token: string,
+    @Res() res: Response,
+  ): Promise<void> {
     return await this.authService.verifyEmail(token, res);
   }
 
@@ -92,8 +95,6 @@ export class AuthController {
     const user = await this.authService.loginUser(loginUserDto);
     return user;
   }
-
-  //LOGOUT
 
   @getProtectedSwagger()
   @Get('protected')

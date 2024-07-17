@@ -26,14 +26,16 @@ export class SellerController {
   constructor(private readonly sellerService: SellerService) {}
 
   @getSellersSwagger()
-  //@Roles(Role.ADMIN)
-  //@UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
   @Get()
   async getAllSellers() {
     return await this.sellerService.getAllSellers();
   }
 
   @registerFairSwagger()
+  //@Roles(Role.SELLER)
+  //@UseGuards(AuthGuard, RoleGuard)
   @Post(':sellerId/register/:fairId/:fairCategoryId')
   async registerFair(
     @Param('sellerId') sellerId: string,
@@ -50,23 +52,25 @@ export class SellerController {
   }
 
   @updateIsVerifySellerSwagger()
-  //@Roles(Role.ADMIN)
-  //@UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
   @Put('noactivate/:sellerId')
   async updateNoVerifySeller(@Param('sellerId') sellerId: string) {
     return await this.sellerService.updateNoVerifySeller(sellerId);
   }
 
   @getSellerByIdSwagger()
-  //@Roles(Role.ADMIN, Role.SELLER)
-  //@UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.ADMIN, Role.SELLER)
+  @UseGuards(AuthGuard, RoleGuard)
   @Get(':sellerId')
   async getSellerById(@Param('sellerId') sellerId: string) {
     return await this.sellerService.getSellerById(sellerId);
   }
 
+
+  @UseGuards(AuthGuard)
   @Put('update/:id')
-  async update(@Param('id') id: string, @Body() seller: any) {
-    return await this.sellerService.update(id, seller);
+  async updateSeller(@Param('id') id: string, @Body() seller: any) {
+    return await this.sellerService.updateSeller(id, seller);
   }
 }

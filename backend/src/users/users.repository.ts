@@ -149,7 +149,7 @@ export class UserRepository {
   }
 
   async sendEmailInscriptionFair(email: string, token: string, fair: Fair) {
-    const url = `${process.env.URL_FRONT}/fair/${token}`;
+    const url = `${process.env.FRONTEND_URL}/fair/${token}`;
     const user = await this.findByEmail(email);
     const name = user.name;
     const DNI = user.dni;

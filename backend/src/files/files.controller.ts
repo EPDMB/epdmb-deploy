@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileService } from './files.service';
@@ -14,6 +15,8 @@ import { UsersService } from '../users/users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { updateImageSwagger } from './files.swagger';
 import { ApiTags } from '@nestjs/swagger';
+import { Role } from 'src/users/roles/roles.enum';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Files')
 @Controller('files')
@@ -24,6 +27,7 @@ export class FileController {
   ) {}
 
   @updateImageSwagger()
+  @UseGuards(AuthGuard)
   @Post('uploadImage/:id')
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(

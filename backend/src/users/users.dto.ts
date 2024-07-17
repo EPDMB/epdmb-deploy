@@ -101,6 +101,15 @@ export class LoginUserDto {
     example: 'Password1!',
   })
   password: string;
+
+  @IsNotEmpty() 
+  @ApiProperty({
+    description: 'Coloque si desea recordar la sesión',
+    example: 'true',
+  })
+  @Type(() => Boolean)
+  rememberMe: boolean;
+
 }
 
 export class ResetPasswordDto extends PickType(RegisterUserDto, [

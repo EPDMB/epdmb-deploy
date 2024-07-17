@@ -160,23 +160,17 @@ export class FairsRepository {
   async closeFair(fairId: string) {
     const fairToClose = await this.fairRepository.findOneBy({ id: fairId });
     if (!fairToClose) throw new NotFoundException('Feria no encontrada');
-    //ACA VAN LAS OPERACIONES DE CERRAR LA FERIA
 
-    // Usuario inactive (no participa en feria)
-    //USUARIO PASE DE ACTIVE A INACTIVE
     const user = fairToClose.userRegistrations;
     user.map((user) => {
       user.user.statusGeneral = UserStatusGeneral.INACTIVE;
     })
 
-    //Seller NO_ACTIVE (no participa en feria)
-    //SELLER PASE DE ACTIVE A NO_ACTIVE
     const seller = fairToClose.sellerRegistrations;
     seller.map((seller) => {
       seller.seller.status = SellerStatus.NO_ACTIVE;
     })
 
-    //DESACTIVAR LA FERIA 
     fairToClose.isActive = false;
     return await this.fairRepository.save(fairToClose);
   }

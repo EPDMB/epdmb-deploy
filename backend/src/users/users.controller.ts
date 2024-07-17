@@ -27,7 +27,6 @@ import {
   unblockUserSwagger,
   updatePasswordSwagger,
   updateUserSwagger,
-  userToAdminSwagger,
   userToSellerSwagger,
 } from './user.swagger';
 import { User } from './users.entity';
@@ -39,23 +38,21 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @getAllUserSwagger()
-  //@Roles(Role.ADMIN)
-  //@UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
   @Get()
   async getAllUsers() {
     return await this.usersService.getAllUsers();
   }
 
   @getUserByEmailAndDniSwagger()
-  //@Roles(Role.ADMIN)
-  //@UseGuards(AuthGuard, RoleGuard)
   @Get('uniquedata')
   async getUserByEmailAndDni(): Promise<{userInfo: User[]; sellerInfo: Seller[]}> {
     return await this.usersService.getUserByEmailAndDni();
   }
 
   @updatePasswordSwagger()
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Put('update-password/:id')
   async updatePassword(
     @Param('id') id: string,
@@ -65,7 +62,7 @@ export class UsersController {
   }
 
   @registerUserFairSwagger()
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Post(':userId/register/fair/:fairId')
   async registerUserFair(
     @Param('fairId') fairId: string,
@@ -80,14 +77,14 @@ export class UsersController {
   }
 
   @getUserByIdSwagger()
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<User> {
     return await this.usersService.getUserById(id);
   }
 
   @userToSellerSwagger()
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Put('changeRole/:id')
   async changeRole(@Param('id') id: string, @Body('role') role: Role): Promise<{message: string,}> {
     await this.usersService.changeRole(id, role);
@@ -95,7 +92,7 @@ export class UsersController {
   }
 
   @updateUserSwagger()
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
@@ -105,16 +102,16 @@ export class UsersController {
   }
 
   @blockUserSwagger()
-  //@Roles(Role.ADMIN)
-  //@UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
   @Put('block/:id')
   async blockUser(@Param('id') id: string) {
     return await this.usersService.blockUser(id);
   }
 
   @unblockUserSwagger()
-  //@Roles(Role.ADMIN)
-  //@UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
   @Put('unblock/:id')
   async unblockUser(@Param('id') id: string) {
     return await this.usersService.unblockUser(id);

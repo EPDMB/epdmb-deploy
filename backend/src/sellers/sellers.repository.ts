@@ -91,10 +91,6 @@ export class SellerRepository {
     liquidation: string,
   ): Promise<string> {
     try {
-      console.log(
-        `registerFair called with sellerId: ${sellerId}, fairId: ${fairId}, fairCategoryId: ${fairCategoryId}, liquidation: ${liquidation}`,
-      );
-
       const fair = await this.fairRepositoryDB.findOneBy({ id: fairId });
       if (!fair) {
         throw new NotFoundException('Feria no encontrada');
@@ -133,7 +129,6 @@ export class SellerRepository {
 
       // Asignar fairCategory a sellerRegistration.categoryFair
       const sellerRegistration = new SellerFairRegistration();
-      console.log(liquidation);
       sellerRegistration.registrationDate = new Date();
       sellerRegistration.entryFee = fair.entryPriceSeller;
       sellerRegistration.liquidation = newLiquidation;
@@ -143,20 +138,10 @@ export class SellerRepository {
 
       await this.sellerFairRegistrationRepository.save(sellerRegistration);
 
-      console.log(
-        `Vendedor registrado correctamente en la feria:`,
-        sellerRegistration,
-      );
       seller.status = SellerStatus.ACTIVE;
       await this.sellerRepository.save(seller);
 
-      const token = this.jwtService.sign(
-        {
-          email: seller.user.email,
-        },
-        { secret: process.env.JWT_SECRET },
-      );
-      await this.sendEmailVerification(seller.user.email, token);
+      await this.sendEmailVerification(seller.user.email);
 
       return 'Vendedor registrado correctamente';
     } catch (error) {
@@ -166,13 +151,11 @@ export class SellerRepository {
       ) {
         throw error;
       }
-      console.log(error);
       throw new Error('Error al registrar vendedor en la feria');
     }
   }
 
-  async sendEmailVerification(email: string, token: string) {
-    console.log(email);
+  async sendEmailVerification(email: string) {
     const user = await this.usersRepository.findOneBy({ email });
     const name = user.name;
     await this.mailService.sendMail({
@@ -239,7 +222,7 @@ export class SellerRepository {
     return sellers;
   }
 
-  async update(id: string, seller: any) {
+  async updateSeller(id: string, seller: any) {
     const sellerToUpdate = await this.sellerRepository.findOneBy({ id });
     if (!sellerToUpdate) throw new NotFoundException('Vendedor no encontrado');
     Object.assign(sellerToUpdate, seller);

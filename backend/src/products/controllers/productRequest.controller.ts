@@ -16,7 +16,13 @@ import { Roles } from 'src/users/roles/roles.decorator';
 import { Role } from 'src/users/roles/roles.enum';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RoleGuard } from 'src/users/roles/roles.guard';
-import { createProductRequestSwagger, getAllProductsRequestSwagger, getProductsSellerSwagger, updateStatusProductRequestSwagger } from '../productsRequest.swagger';
+import {
+  createProductRequestSwagger,
+  getAllProductsRequestSwagger,
+  getProductsSellerSwagger,
+  updateStatusProductRequestSwagger,
+} from '../productsRequest.swagger';
+import { StatusProductRequest } from '../enum/statusProductRequest.enum';
 
 @ApiTags('Product Request')
 @Controller('product-request')
@@ -58,7 +64,17 @@ export class ProductRequestController {
       productId,
       status,
     );
-    return { message: 'Los productos se han aceptado correctamente' };
+    return { message: 'El producto ha sido clasificado correctamente' };
+  }
+
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Put('check/:id')
+  async checkedProductRequest(
+    @Param('id') id: string,
+  ) {
+    await this.productRequestService.checkedProductRequest(id);
+    return { message: 'El productrequest ha sido actualizado correctamente' };
   }
 
   @getAllProductsRequestSwagger()
@@ -70,7 +86,7 @@ export class ProductRequestController {
   }
 
   @getProductsSellerSwagger()
-  @Roles(Role.SELLER)
+  @Roles(Role.SELLER, Role.ADMIN)
   @UseGuards(AuthGuard, RoleGuard)
   @Get(':id')
   async getProductRequestById(@Param('id') id: string) {
