@@ -86,8 +86,8 @@ export class ProductRequestController {
   }
 
   @getProductsSellerSwagger()
-  @Roles(Role.SELLER, Role.ADMIN)
-  @UseGuards(AuthGuard, RoleGuard)
+  // @Roles(Role.SELLER, Role.ADMIN)
+  // @UseGuards(AuthGuard, RoleGuard)
   @Get(':id')
   async getProductRequestById(@Param('id') id: string) {
     return await this.productRequestService.getProductRequestById(id);

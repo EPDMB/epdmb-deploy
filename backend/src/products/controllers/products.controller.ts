@@ -32,8 +32,8 @@ export class ProductsController {
     }
 
     @getAllProductsSwagger()
-    @Roles(Role.ADMIN)
-   @UseGuards(AuthGuard, RoleGuard)
+//     @Roles(Role.ADMIN)
+//    @UseGuards(AuthGuard, RoleGuard)
     @Get()
     async getProducts(): Promise<Product[]> {
         return await this.productsService.getProducts();
@@ -47,8 +47,8 @@ export class ProductsController {
         return await this.productsService.updateStatus(id, updateProduct);
     } 
 
-    @Roles(Role.SELLER)
-    @UseGuards(AuthGuard, RoleGuard)
+    // @Roles(Role.SELLER)
+    // @UseGuards(AuthGuard, RoleGuard)
     @Get('seller/:sellerId')
     async getSellerProducts(@Param('sellerId')sellerId: string) {
         return await this.productsService.getSellerProducts(sellerId)
