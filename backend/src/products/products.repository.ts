@@ -106,12 +106,15 @@ export class ProductsRepository {
 
   async updateStatus(id: string, updateProduct: UpdateProductDTO) {
     const { status } = updateProduct;
+    console.log(updateProduct)
     const product = await this.productRepository.findOneBy({ id });
+    console.log(product)
     if (!product) {
       throw new NotFoundException(`Producto con id ${id} no encontrado`);
     }
 
     product.status = status;
+    console.log(product)
     await this.productRepository.save(product);
 
     return product;

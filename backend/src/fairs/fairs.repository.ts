@@ -158,7 +158,7 @@ export class FairsRepository {
   }
 
   async closeFair(fairId: string) {
-    const fairToClose = await this.fairRepository.findOneBy({ id: fairId });
+    const fairToClose = await this.fairRepository.findOne({where: { id: fairId }, relations: { userRegistrations: { user: true }, sellerRegistrations: { seller: true } } });
     if (!fairToClose) throw new NotFoundException('Feria no encontrada');
 
     const user = fairToClose.userRegistrations;

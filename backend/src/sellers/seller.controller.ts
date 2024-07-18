@@ -60,13 +60,11 @@ export class SellerController {
   }
 
   @getSellerByIdSwagger()
-  @Roles(Role.ADMIN, Role.SELLER)
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(AuthGuard)
   @Get(':sellerId')
   async getSellerById(@Param('sellerId') sellerId: string) {
     return await this.sellerService.getSellerById(sellerId);
   }
-
 
   @UseGuards(AuthGuard)
   @Put('update/:id')

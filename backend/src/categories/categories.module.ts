@@ -13,7 +13,7 @@ import { CategoriesService } from "./categories.service";
 })
 
 export class CategoriesModule implements OnModuleInit { 
-    private categories = [{name: "0-12 Varon", maxSellers: 10},{name: "0-12 mujer", maxSellers: 10}, {name: "+12 Varon", maxSellers: 10}, {name: "+12 Mujer", maxSellers: 10}, {name: "adultos", maxSellers: 10}, {name: "Libros/Juguetes", maxSellers: 10}]
+    private categories = [{name: "0-12-Varon", maxSellers: 10},{name: "0-12-Mujer", maxSellers: 10}, {name: "+12-Varon", maxSellers: 10}, {name: "+12-Mujer", maxSellers: 10}, {name: "Adultos", maxSellers: 10}, {name: "Libros/Juguetes", maxSellers: 10}]
     constructor(
         private readonly categoriesService: CategoriesService
     ) {}

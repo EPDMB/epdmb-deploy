@@ -95,20 +95,24 @@ export class ProductRequestService {
       }
     }
 
-    productRequest.products = await this.productsRepository.find({
-      where: { productRequest: productRequest },
-    });
-
+    // productRequest.products = await this.productsRepository.find({
+    //   where: { productRequest: productRequest },
+    // });
     await this.productRequestRepository.save(productRequest);
 
-    const allProductsNotPending = productRequest.products.every(
-      (product) => product.status !== ProductStatus.PENDINGVERICATION,
-    );
+    const updatedProductRequest = await this.productRequestRepository.findOne({
+      where: { id: id },
+      relations: { products: true },
+    });
 
-    if (allProductsNotPending) {
-      productRequest.status = StatusProductRequest.CHECKED;
-      await this.productRequestRepository.save(productRequest);
-    }
+    // const allProductsNotPending = updatedProductRequest.products.every(
+    //   (product) => product.status !== ProductStatus.PENDINGVERICATION,
+    // );
+
+    // if (allProductsNotPending) {
+    //   productRequest.status = StatusProductRequest.CHECKED;
+    //   await this.productRequestRepository.save(productRequest);
+    // }
   }
 
   async checkedProductRequest(id: string) {

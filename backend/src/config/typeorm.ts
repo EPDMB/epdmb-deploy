@@ -42,7 +42,10 @@ const config: DataSourceOptions = {
   ],
   ssl: {
     rejectUnauthorized: false,
-  },
+  }, // deshabilitar SSL
+
+  // entities: ['dist/**/*.entity{.ts,.js}'],
+  //autoLoadEntities: true,
   migrations: ['dist/src/migrations/*{.ts,.js}'],
 };
 

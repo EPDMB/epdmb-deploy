@@ -62,6 +62,10 @@ export class PaymentsService {
       auto_return: 'approved',
     };
     try {
+      console.log('datos de entrada');
+      console.log(createPaymentDto.categoryId);
+      console.log(createPaymentDto.fairId);
+      console.log(createPaymentDto.userId);
       const response = await preference.create({ body: preferenceData });
       return { preferenceId: response.id };
     } catch (error) {

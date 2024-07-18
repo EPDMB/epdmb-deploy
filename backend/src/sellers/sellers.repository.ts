@@ -91,6 +91,10 @@ export class SellerRepository {
     liquidation: string,
   ): Promise<string> {
     try {
+      console.log(
+        `registerFair called with sellerId: ${sellerId}, fairId: ${fairId}, fairCategoryId: ${fairCategoryId}, liquidation: ${liquidation}`,
+      );
+
       const fair = await this.fairRepositoryDB.findOneBy({ id: fairId });
       if (!fair) {
         throw new NotFoundException('Feria no encontrada');
@@ -123,12 +127,13 @@ export class SellerRepository {
         throw new BadRequestException('Categoría llena');
       }
       let newLiquidation = false;
-      if (liquidation == 'si') {
+      if (liquidation == 'Si') {
         newLiquidation = true;
       }
 
       // Asignar fairCategory a sellerRegistration.categoryFair
       const sellerRegistration = new SellerFairRegistration();
+      console.log(liquidation);
       sellerRegistration.registrationDate = new Date();
       sellerRegistration.entryFee = fair.entryPriceSeller;
       sellerRegistration.liquidation = newLiquidation;
@@ -138,6 +143,10 @@ export class SellerRepository {
 
       await this.sellerFairRegistrationRepository.save(sellerRegistration);
 
+      console.log(
+        `Vendedor registrado correctamente en la feria:`,
+        sellerRegistration,
+      );
       seller.status = SellerStatus.ACTIVE;
       await this.sellerRepository.save(seller);
 
@@ -151,11 +160,13 @@ export class SellerRepository {
       ) {
         throw error;
       }
+      console.log(error);
       throw new Error('Error al registrar vendedor en la feria');
     }
   }
 
   async sendEmailVerification(email: string) {
+    console.log(email);
     const user = await this.usersRepository.findOneBy({ email });
     const name = user.name;
     await this.mailService.sendMail({
