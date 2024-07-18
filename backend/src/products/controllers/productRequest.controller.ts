@@ -33,8 +33,8 @@ export class ProductRequestController {
   ) {}
 
   @createProductRequestSwagger()
-  @Roles(Role.SELLER)
-  @UseGuards(AuthGuard, RoleGuard)
+  // @Roles(Role.SELLER)
+  // @UseGuards(AuthGuard, RoleGuard)
   @Post()
   async createProductRequest(
     @Body() createProductRequestDto: CreateProductRequestDto,
